@@ -16,7 +16,7 @@ class EventManagerController extends Controller
         if ($alexaRequest instanceof IntentRequest) {
             $response->respond('Absicht erkannt: ' . $alexaRequest->intentName);
         } else {
-            $response->responde('Keine Absicht erkannt');
+            $response->respond('Keine Absicht erkannt');
         }
 
         return response()->json($response->render());
