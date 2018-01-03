@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Alexa\Request\IntentRequest;
-use Illuminate\Http\Request;
-use Faker\Generator as Faker;
+use \Alexa\Request\IntentRequest;
+use \Illuminate\Http\Request;
+use \Faker\Generator as Faker;
 
 class EventManagerController extends Controller
 {
