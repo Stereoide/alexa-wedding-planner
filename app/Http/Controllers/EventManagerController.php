@@ -148,7 +148,7 @@ class EventManagerController extends Controller
                         $response->respond('Es haben noch keine Gäste zugesagt.');
                     } else {
                         $guestNames = [];
-                        $guests->each(function($guest) use ($guestNames) {
+                        $guests->each(function($guest) use (&$guestNames) {
                             $guestNames[] = $guest->name;
                         });
 
@@ -167,7 +167,7 @@ class EventManagerController extends Controller
                         $response->respond('Es haben noch keine Gäste abgesagt.');
                     } else {
                         $guestNames = [];
-                        $guests->each(function($guest) use ($guestNames) {
+                        $guests->each(function($guest) use (&$guestNames) {
                             $guestNames[] = $guest->name;
                         });
 
@@ -186,7 +186,7 @@ class EventManagerController extends Controller
                         $response->respond('Es sind keine Anmeldungen mehr offen.');
                     } else {
                         $guestNames = [];
-                        $guests->each(function($guest) use ($guestNames) {
+                        $guests->each(function($guest) use (&$guestNames) {
                             $guestNames[] = $guest->name;
                         });
 
