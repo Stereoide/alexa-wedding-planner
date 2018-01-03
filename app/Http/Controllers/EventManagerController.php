@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use \Alexa\Request\IntentRequest;
-use \Illuminate\Http\Request;
-use \Faker\Generator as Faker;
+use Alexa\Request\IntentRequest;
+use Illuminate\Http\Request;
 
 class EventManagerController extends Controller
 {
-    public function index(Request $request, Faker $faker)
+    public function index(Request $request)
     {
         $alexaRequest = \Alexa\Request\Request::fromData($request->json()->all());
 
@@ -74,7 +73,7 @@ class EventManagerController extends Controller
                         'Es tut mir leid, das weiß ich nicht',
                         'Wie bitte?',
                     ];
-                    $responseText = $faker->shuffleArray($responses);
+                    $responseText = $responses[array_rand($responses)];
 
                     break;
             }
@@ -86,8 +85,7 @@ class EventManagerController extends Controller
                 'Herzlich Willkommen',
                 'Willkommen',
             ];
-
-            $response->respond($faker->shuffleArray($responses));
+            $responseText = $responses[array_rand($responses)];
         }
 
         return response()->json($response->render());
