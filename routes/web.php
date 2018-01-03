@@ -14,7 +14,3 @@
 Route::get('/', function () {
     return view('welcome');
 });
-
-Route::get('/test/{id}', function($id) {
-    return 'Testing id #' . $id;
-});
