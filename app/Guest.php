@@ -14,4 +14,23 @@ class Guest extends Model
     protected $fillable = [
         'name', 'status',
     ];
+
+    /**
+     * Scopes
+     */
+
+    public function scopeUndecided($query)
+    {
+        return $query->where('status', 'undecided');
+    }
+
+    public function scopeConfirmed($query)
+    {
+        return $query->where('status', 'confirmed');
+    }
+
+    public function scopeUnable($query)
+    {
+        return $query->where('status', 'unable');
+    }
 }
