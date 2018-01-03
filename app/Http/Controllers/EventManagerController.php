@@ -18,7 +18,7 @@ class EventManagerController extends Controller
 
                 case 'AddGuestIntent' :
                     $slotValue = ($alexaRequest->slots['Name']['value'] ?? 'kein Name');
-                    $slotValue = (string)$alexaRequest->slots;
+                    $slotValue = count($alexaRequest->slots) . ' Slots: ' . array_keys($alexaRequest->slots);
                     $response->respond('Gastname: ' . $slotValue);
                     return $response->render();
 
