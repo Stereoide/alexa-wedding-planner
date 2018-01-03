@@ -47,9 +47,9 @@ class EventManagerController extends Controller
                 case 'GetGuestsListIntent' :
                     /* Fetch all guests */
 
-                    $guestsConfirmed = Guest::confirmed()->all();
-                    $guestsUndecided = Guest::undecided()->all();
-                    $guestsUnable = Guest::unable()->all();
+                    $guestsConfirmed = Guest::confirmed()->get();
+                    $guestsUndecided = Guest::undecided()->get();
+                    $guestsUnable = Guest::unable()->get();
 
                     $responseText = ($guestsConfirmed->isEmpty() ? 'Es haben noch keine Gäste zugesagt' : $guestsConfirmed->count() . ' Gäste haben zugesagt');
                     $responseText .= ', ' . ($guestsUnable->isEmpty() ? 'es haben noch keine Gäste abgesagt' : $guestsUnable->count() . ' Gäste haben abgesagt');
@@ -62,7 +62,7 @@ class EventManagerController extends Controller
                 case 'GetConfirmedGuestsListIntent' :
                     /* Fetch confirmed guests */
 
-                    $guests = Guest::confirmed()->all();
+                    $guests = Guest::confirmed()->get();
 
                     if ($guests->isEmpty()) {
                         $response->respond('Es haben noch keine Gäste zugesagt.');
@@ -81,7 +81,7 @@ class EventManagerController extends Controller
                 case 'GetUnableGuestsListIntent' :
                     /* Fetch called off guests */
 
-                    $guests = Guest::unable()->all();
+                    $guests = Guest::unable()->get();
 
                     if ($guests->isEmpty()) {
                         $response->respond('Es haben noch keine Gäste abgesagt.');
@@ -100,7 +100,7 @@ class EventManagerController extends Controller
                 case 'GetUndecidedGuestsListIntent' :
                     /* Fetch called off guests */
 
-                    $guests = Guest::undecided()->all();
+                    $guests = Guest::undecided()->get();
 
                     if ($guests->isEmpty()) {
                         $response->respond('Es sind keine Anmeldungen mehr offen.');
