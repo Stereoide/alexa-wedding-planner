@@ -49,7 +49,7 @@ class EventManagerController extends Controller
                     break;
 
                 case 'RemoveAllGuestsIntent' :
-                    Guest::all()->delete();
+                    Guest::truncate();
 
                     $response->respond('Ich habe alle Gäste von der Gästeliste entfernt.');
                     break;
