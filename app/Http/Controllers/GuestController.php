@@ -58,7 +58,7 @@ class GuestController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function getGuestStatus(Request $request)
+    public function getGuestsStatus(Request $request)
     {
         //
     }
@@ -69,7 +69,7 @@ class GuestController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function getGuestList(Request $request)
+    public function getGuestsList(Request $request)
     {
         //
     }
