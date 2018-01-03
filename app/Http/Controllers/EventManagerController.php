@@ -84,8 +84,6 @@ class EventManagerController extends Controller
 
                     break;
             }
-
-            $response->respond($responseText);
         } else {
             $responses = [
                 'Hallo',
