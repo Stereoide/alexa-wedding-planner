@@ -1,6 +1,15 @@
 <?php
 
 $url = parse_url(getenv("DATABASE_URL"));
+if (!isset($url['host'])) {
+    $url = [
+        'host' => env('DB_HOST'),
+        'user' => env('DB_USERNAME'),
+        'pass' => env('DB_PASSWORD'),
+        'database' => env('DB_DATABASE'),
+        'path' => '',
+    ];
+}
 
 return [
 
