@@ -15,52 +15,59 @@ class EventManagerController extends Controller
         if ($alexaRequest instanceof IntentRequest) {
             switch ($alexaRequest->intentName) {
                 case 'AddGuestIntent' :
-                    $responseText = 'Neuen Gast hinzufügen';
+                    if (isset($alexaRequest->slots['Name']['value']) && !empty($alexaRequest->slots['Name']['value'])) {
+                        $guestName = $alexaRequest->slots['Name']['value'];
+
+                        Guest::create(['name' => $guestName, 'status' => 'undecided']);
+                        $response->respond($guestName . ' hinzugefügt');
+                    } else {
+                        $response->reprompt('Nachfrage');
+                    }
 
                     break;
 
                 case 'RemoveGuestIntent' :
-                    $responseText = 'Gast entfernen';
+                    $response->respond('Gast entfernen');
 
                     break;
 
                 case 'ConfirmGuestIntent' :
-                    $responseText = 'Gast bestätigen';
+                    $response->respond('Gast bestätigen');
 
                     break;
 
                 case 'CallOffGuestIntent' :
-                    $responseText = 'Gast absagen';
+                    $response->respond('Gast absagen');
 
                     break;
 
                 case 'GetGuestsListIntent' :
-                    $responseText = 'Gästeliste abfragen';
+                    $response->respond('Gästeliste abfragen');
 
                     break;
 
                 case 'GetConfirmedGuestsListIntent' :
-                    $responseText = 'Bestätigte Gästeliste abfragen';
+                    $response->respond('Bestätigte Gästeliste abfragen');
 
                     break;
 
                 case 'GetUnableGuestsListIntent' :
-                    $responseText = 'Abgesagte Gästeliste abfragen';
+                    $response->respond('Abgesagte Gästeliste abfragen');
 
                     break;
 
                 case 'GetUndecidedGuestsListIntent' :
-                    $responseText = 'Unbestätigte Gästeliste abfragen';
+                    $response->respond('Unbestätigte Gästeliste abfragen');
 
                     break;
 
                 case 'GetGuestStatusIntent' :
-                    $responseText = 'Gaststatus abfragen';
+                    $response->respond('Gaststatus abfragen');
 
                     break;
 
                 case 'Intent' :
-                    $responseText = '';
+                    $response->respond('Unbekannte Absicht');
 
                     break;
 
@@ -73,7 +80,7 @@ class EventManagerController extends Controller
                         'Es tut mir leid, das weiß ich nicht',
                         'Wie bitte?',
                     ];
-                    $responseText = $responses[array_rand($responses)];
+                    $response->respond($responses[array_rand($responses)]);
 
                     break;
             }
@@ -85,7 +92,7 @@ class EventManagerController extends Controller
                 'Herzlich Willkommen',
                 'Willkommen',
             ];
-            $responseText = $responses[array_rand($responses)];
+            $response->respond($responses[array_rand($responses)]);
         }
 
         return response()->json($response->render());
