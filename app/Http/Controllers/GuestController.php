@@ -15,6 +15,9 @@ class GuestController extends Controller
      */
     public function addGuest(Request $request)
     {
+        $response = new \Alexa\Response\Response;
+        $response->respond('Gast hinzufügen');
+
         /* Determine whether this guest is already registered */
 
 
