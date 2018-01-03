@@ -26,4 +26,23 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    /**
+     * Scopes
+     */
+
+    public function scopeUndecided($query)
+    {
+        return $query->where('status', 'undecided');
+    }
+
+    public function scopeConfirmed($query)
+    {
+        return $query->where('status', 'confirmed');
+    }
+
+    public function scopeUnable($query)
+    {
+        return $query->where('status', 'unable');
+    }
 }
