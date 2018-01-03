@@ -12,7 +12,8 @@ class EventManagerController extends Controller
         $alexaRequest = \Alexa\Request\Request::fromData($request->json()->all());
 
         $response = new \Alexa\Response\Response;
-
+        $response->respond($alexaRequest['type']);
+        return $response->render();
 
         if ($alexaRequest instanceof IntentRequest) {
             switch ($alexaRequest->intentName) {
