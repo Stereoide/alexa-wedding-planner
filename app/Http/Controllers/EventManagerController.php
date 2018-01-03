@@ -17,6 +17,10 @@ class EventManagerController extends Controller
             switch ($alexaRequest->intentName) {
 
                 case 'AddGuestIntent' :
+                    $slotValue = ($alexaRequest->slots['Name']['value'] ?? 'kein Name');
+                    $response->respond('Gastname: ' . $slotValue);
+                    return $response->render();
+
                     if (isset($alexaRequest->slots['Name']['value']) && !empty($alexaRequest->slots['Name']['value'])) {
 
                         $response->respond('neuer Gast mit Namen');
@@ -27,7 +31,7 @@ class EventManagerController extends Controller
                         Guest::create(['name' => $guestName, 'status' => 'undecided']);
                         $response->respond($guestName . ' hinzugefügt');
                     } else {
-                        $response->respond('neuer Gast ohen Name');
+                        $response->respond('neuer Gast ohne Name');
                         return $response->render();
 
                         $response->reprompt('Welcher Gast soll hinzugefügt werden?');
