@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Alexa\Request\IntentRequest;
+use App\Guest;
 use Illuminate\Http\Request;
 
 class EventManagerController extends Controller
@@ -17,24 +18,12 @@ class EventManagerController extends Controller
             switch ($alexaRequest->intentName) {
 
                 case 'AddGuestIntent' :
-                    $slotValue = ($alexaRequest->slots['Name']['value'] ?? 'kein Name');
-                    $slotValue = count($alexaRequest->slots) . ' Slots: ' . implode(', ', array_keys($alexaRequest->slots));
-                    $response->respond('Gastname: ' . $slotValue);
-                    return $response->render();
-
-                    if (isset($alexaRequest->slots['Name']['value']) && !empty($alexaRequest->slots['Name']['value'])) {
-
-                        $response->respond('neuer Gast mit Namen');
-                        return $response->render();
-
-                        $guestName = $alexaRequest->slots['Name']['value'];
+                    if (isset($alexaRequest->slots['Name']) && !empty($alexaRequest->slots['Name'])) {
+                        $guestName = $alexaRequest->slots['Name'];
 
                         Guest::create(['name' => $guestName, 'status' => 'undecided']);
                         $response->respond($guestName . ' hinzugefügt');
                     } else {
-                        $response->respond('neuer Gast ohne Name');
-                        return $response->render();
-
                         $response->reprompt('Welcher Gast soll hinzugefügt werden?');
                     }
 
@@ -56,22 +45,74 @@ class EventManagerController extends Controller
                     break;
 
                 case 'GetGuestsListIntent' :
-                    $response->respond('Gästeliste abfragen');
+                    /* Fetch all guests */
+
+                    $guestsConfirmed = Guest::confirmed()->all();
+                    $guestsUndecided = Guest::undecided()->all();
+                    $guestsUnable = Guest::unable()->all();
+
+                    $responseText = ($guestsConfirmed->isEmpty() ? 'Es haben noch keine Gäste zugesagt' : $guestsConfirmed->count() . ' Gäste haben zugesagt');
+                    $responseText .= ', ' . ($guestsUnable->isEmpty() ? 'es haben noch keine Gäste abgesagt' : $guestsUnable->count() . ' Gäste haben abgesagt');
+                    $responseText .= ' und ' . ($guestsUndecided->isEmpty() ? 'es sind keine Anmeldungen mehr offen' : $guestsConfirmed->count() . ' Gäste haben sich noch nicht entschieden.');
+
+                    $response->respond($responseText);
 
                     break;
 
                 case 'GetConfirmedGuestsListIntent' :
-                    $response->respond('Bestätigte Gästeliste abfragen');
+                    /* Fetch confirmed guests */
+
+                    $guests = Guest::confirmed()->all();
+
+                    if ($guests->isEmpty()) {
+                        $response->respond('Es haben noch keine Gäste zugesagt.');
+                    } else {
+                        $guestNames = [];
+                        $guests->each(function($guest) use ($guestNames) {
+                            $guestNames[] = $guest->name;
+                        });
+
+                        $responseText = 'Folgende Gäste haben bereits zugesagt: ' . implode(', ', $guestNames);
+                        $response->respond($responseText);
+                    }
 
                     break;
 
                 case 'GetUnableGuestsListIntent' :
-                    $response->respond('Abgesagte Gästeliste abfragen');
+                    /* Fetch called off guests */
+
+                    $guests = Guest::unable()->all();
+
+                    if ($guests->isEmpty()) {
+                        $response->respond('Es haben noch keine Gäste abgesagt.');
+                    } else {
+                        $guestNames = [];
+                        $guests->each(function($guest) use ($guestNames) {
+                            $guestNames[] = $guest->name;
+                        });
+
+                        $responseText = 'Folgende Gäste haben bereits abgesagt: ' . implode(', ', $guestNames);
+                        $response->respond($responseText);
+                    }
 
                     break;
 
                 case 'GetUndecidedGuestsListIntent' :
-                    $response->respond('Unbestätigte Gästeliste abfragen');
+                    /* Fetch called off guests */
+
+                    $guests = Guest::undecided()->all();
+
+                    if ($guests->isEmpty()) {
+                        $response->respond('Es sind keine Anmeldungen mehr offen.');
+                    } else {
+                        $guestNames = [];
+                        $guests->each(function($guest) use ($guestNames) {
+                            $guestNames[] = $guest->name;
+                        });
+
+                        $responseText = 'Folgende Gäste haben noch nicht entschieden: ' . implode(', ', $guestNames);
+                        $response->respond($responseText);
+                    }
 
                     break;
 
