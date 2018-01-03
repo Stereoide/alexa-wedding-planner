@@ -155,21 +155,18 @@ class EventManagerController extends Controller
 
                     break;
 
-                case 'Intent' :
-                    $response->respond('Unbekannte Absicht');
-
-                    break;
-
                 default :
                     $responses = [
                         'Das habe ich leider nicht verstanden',
                         'Das weiß ich leider nicht',
-                        'Es tut mir leid, damit kann ich dir nicht leider nicht helfen',
+                        'Es tut mir leid, damit kann ich dir leider nicht helfen',
                         'Es tut mir leid, das habe ich nicht verstanden',
                         'Es tut mir leid, das weiß ich nicht',
                         'Wie bitte?',
                     ];
                     $response->respond($responses[array_rand($responses)]);
+
+                    $response->respond($alexaRequest->intentName);
 
                     break;
             }
