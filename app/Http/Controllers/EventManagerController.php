@@ -26,12 +26,12 @@ class EventManagerController extends Controller
                         $guests = Guest::where('name', $guestName)->get();
                         if ($guests->isEmpty()) {
                             Guest::create(['name' => $guestName, 'status' => 'undecided']);
-                            $response->respond($guestName . ' hinzugefügt');
+                            $response->respond('Ich habe ' . $guestName . ' zur Gästeliste hinzugefügt');
                         } else {
                             $response->respond($guestName . ' war bereits angemeldet.');
                         }
                     } else {
-                        $response->reprompt('Welcher Gast soll hinzugefügt werden?');
+                        $response->reprompt('Welcher Gast soll zur Gästeliste hinzugefügt werden?');
                     }
 
                     break;
@@ -43,7 +43,7 @@ class EventManagerController extends Controller
                         Guest::where('name', $guestName)->delete();
                         $response->respond('Ich habe ' . $guestName . ' von der Gästeliste entfernt.');
                     } else {
-                        $response->reprompt('Welcher Gast soll hinzugefügt werden?');
+                        $response->reprompt('Welcher Gast soll von der Gästeliste gelöscht werden?');
                     }
 
                     break;
