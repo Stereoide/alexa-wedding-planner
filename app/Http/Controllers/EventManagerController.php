@@ -18,15 +18,20 @@ class EventManagerController extends Controller
 
                 case 'AddGuestIntent' :
                     if (isset($alexaRequest->slots['Name']['value']) && !empty($alexaRequest->slots['Name']['value'])) {
+
+                        $response->respond('neuer Gast mit Namen');
+                        return $response->render();
+
                         $guestName = $alexaRequest->slots['Name']['value'];
 
                         Guest::create(['name' => $guestName, 'status' => 'undecided']);
                         $response->respond($guestName . ' hinzugefügt');
                     } else {
+                        $response->respond('neuer Gast ohen Name');
+                        return $response->render();
+
                         $response->reprompt('Welcher Gast soll hinzugefügt werden?');
                     }
-
-                    return $response->render();
 
                     break;
 
