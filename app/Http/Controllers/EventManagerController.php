@@ -21,8 +21,15 @@ class EventManagerController extends Controller
                     if (isset($alexaRequest->slots['Name']) && !empty($alexaRequest->slots['Name'])) {
                         $guestName = $alexaRequest->slots['Name'];
 
-                        Guest::create(['name' => $guestName, 'status' => 'undecided']);
-                        $response->respond($guestName . ' hinzugefügt');
+                        /* Determine whether this guest already exists */
+
+                        $guests = Guest::where('name', $guestName)->get();
+                        if ($guests->isEmpty()) {
+                            Guest::create(['name' => $guestName, 'status' => 'undecided']);
+                            $response->respond($guestName . ' hinzugefügt');
+                        } else {
+                            $response->respond($guestName . ' war bereits angemeldet.');
+                        }
                     } else {
                         $response->reprompt('Welcher Gast soll hinzugefügt werden?');
                     }
@@ -30,17 +37,56 @@ class EventManagerController extends Controller
                     break;
 
                 case 'RemoveGuestIntent' :
-                    $response->respond('Gast entfernen');
+                    if (isset($alexaRequest->slots['Name']) && !empty($alexaRequest->slots['Name'])) {
+                        $guestName = $alexaRequest->slots['Name'];
+
+                        Guest::where('name', $guestName)->delete();
+                        $response->respond('Ich habe ' . $guestName . ' von der Gästeliste entfernt.');
+                    } else {
+                        $response->reprompt('Welcher Gast soll hinzugefügt werden?');
+                    }
 
                     break;
 
+                case 'RemoveAllGuestsIntent' :
+                    Guest::all()->delete();
+
+                    $response->respond('Ich habe alle Gäste von der Gästeliste entfernt.');
+                    break;
+
                 case 'ConfirmGuestIntent' :
-                    $response->respond('Gast bestätigen');
+                    if (isset($alexaRequest->slots['Name']) && !empty($alexaRequest->slots['Name'])) {
+                        $guestName = $alexaRequest->slots['Name'];
+
+                        $guest = Guest::where('name', $guestName)->first();
+                        if (!is_null($guest)) {
+                            $guest->status = 'confirmed';
+                            $guest->save();
+                            $response->respond('Ich habe die Zusage für ' . $guestName . ' notiert.');
+                        } else {
+                            $response->respond('Ich konnte keinen Gast mit diesem Namen finden.');
+                        }
+                    } else {
+                        $response->reprompt('Welcher Gast soll bestätigt werden?');
+                    }
 
                     break;
 
                 case 'CallOffGuestIntent' :
-                    $response->respond('Gast absagen');
+                    if (isset($alexaRequest->slots['Name']) && !empty($alexaRequest->slots['Name'])) {
+                        $guestName = $alexaRequest->slots['Name'];
+
+                        $guest = Guest::where('name', $guestName)->first();
+                        if (!is_null($guest)) {
+                            $guest->status = 'unable';
+                            $guest->save();
+                            $response->respond('Ich habe die Absage für ' . $guestName . ' notiert.');
+                        } else {
+                            $response->respond('Ich konnte keinen Gast mit diesem Namen finden.');
+                        }
+                    } else {
+                        $response->reprompt('Welcher Gast soll abgesagt werden?');
+                    }
 
                     break;
 
@@ -144,14 +190,43 @@ class EventManagerController extends Controller
                             $guestNames[] = $guest->name;
                         });
 
-                        $responseText = 'Folgende Gäste haben noch nicht entschieden: ' . implode(', ', $guestNames);
+                        $responseText = 'Folgende Gäste haben sich noch nicht entschieden: ' . implode(', ', $guestNames);
                         $response->respond($responseText);
                     }
 
                     break;
 
                 case 'GetGuestStatusIntent' :
-                    $response->respond('Gaststatus abfragen');
+                    if (isset($alexaRequest->slots['Name']) && !empty($alexaRequest->slots['Name'])) {
+                        $guestName = $alexaRequest->slots['Name'];
+
+                        $guest = Guest::where('name', $guestName)->first();
+                        if (!is_null($guest)) {
+                            switch ($guest->status) {
+                                case 'confirmed' :
+                                    $response->respond($guestName . ' hat zugesagt.');
+
+                                    break;
+
+                                case 'unable' :
+                                    $response->respond($guestName . ' hat abgesagt.');
+
+                                    break;
+
+                                case 'undecided' :
+                                    $response->respond($guestName . ' hat sich noch nicht entschieden.');
+
+                                    break;
+
+                                default :
+                                    $status = 'unbekannt';
+                            }
+                        } else {
+                            $response->respond('Ich konnte keinen Gast mit diesem Namen finden.');
+                        }
+                    } else {
+                        $response->reprompt('Für welchen Gast möchtest Du den Anmeldestatus wissen?');
+                    }
 
                     break;
 
