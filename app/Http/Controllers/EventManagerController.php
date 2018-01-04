@@ -29,12 +29,12 @@ class EventManagerController extends Controller
             /* No user found -> Create user and default event */
 
             $user = User::create(['user_id' => $userId, ]);
-            $event = Event::create(['user_id' => $user->id, 'name' => 'Standard-Veranstaltung', ]);
+            $event = Event::create(['user_id' => $user->id, 'name' => 'Standardveranstaltung', ]);
 
             $user->event_id = $event->id;
             $user->save();
 
-            $response->respond('Herzlich willkommen zum Eventplaner. Ich habe bereits eine Standard-Veranstaltung für Sie angelegt, Sie können also sofort loslegen.');
+            $response->respond('Herzlich willkommen zum Eventplaner. Ich habe bereits eine Standardveranstaltung für Sie angelegt, Sie können also sofort loslegen.');
             return response()->json($response->render());
         }
 
@@ -46,11 +46,11 @@ class EventManagerController extends Controller
             switch ($alexaRequest->intentName) {
                 case 'AddEventIntent' :
                     if (isset($alexaRequest->slots['Veranstaltung']) && !empty($alexaRequest->slots['Veranstaltung'])) {
-                        $eventName = $alexaRequest->slots['Veranstaltung'];
+                        $eventName = ucwords($alexaRequest->slots['Veranstaltung']);
 
                         /* Determine whether this event already exists */
 
-                        $event = Event::forUser($user->id)->where('name', $eventName)->first();
+                        $event = Event::forUser($user->id)->where('name', 'LIKE', $eventName)->first();
                         if (empty($event)) {
                             $currentEvent = Event::create(['user_id' => $user->id, 'name' => $eventName, ]);
                             $user->event_id = $currentEvent->id;
@@ -72,11 +72,11 @@ class EventManagerController extends Controller
 
                 case 'ChangeEventIntent' :
                     if (isset($alexaRequest->slots['Veranstaltung']) && !empty($alexaRequest->slots['Veranstaltung'])) {
-                        $eventName = $alexaRequest->slots['Veranstaltung'];
+                        $eventName = ucwords($alexaRequest->slots['Veranstaltung']);
 
                         /* Determine whether this event exists */
 
-                        $event = Event::forUser($user->id)->where('name', $eventName)->first();
+                        $event = Event::forUser($user->id)->where('name', 'LIKE', $eventName)->first();
                         if (!empty($event)) {
                             $currentEvent = $event;
                             $user->event_id = $currentEvent->id;
@@ -94,14 +94,14 @@ class EventManagerController extends Controller
 
                 case 'RemoveEventIntent' :
                     if (isset($alexaRequest->slots['Veranstaltung']) && !empty($alexaRequest->slots['Veranstaltung'])) {
-                        $eventName = $alexaRequest->slots['Veranstaltung'];
+                        $eventName = ucwords($alexaRequest->slots['Veranstaltung']);
 
-                        if ($eventName == 'Standard-Veranstaltung') {
-                            $response->respond('Die Standard-Veranstaltung kann leider nicht gelöscht werden.');
+                        if ($eventName == 'Standardveranstaltung') {
+                            $response->respond('Die Standardveranstaltung kann leider nicht gelöscht werden.');
                         } else {
                             /* Determine whether this event exists */
 
-                            $event = Event::forUser($user->id)->where('name', $eventName)->first();
+                            $event = Event::forUser($user->id)->where('name', 'LIKE', $eventName)->first();
                             if (!empty($event)) {
                                 /* Remove guests first */
 
@@ -113,11 +113,11 @@ class EventManagerController extends Controller
 
                                 /* Fetch default event */
 
-                                $currentEvent = Event::forUser($user->id)->where('name', 'Standard-Veranstaltung')->first();
+                                $currentEvent = Event::forUser($user->id)->where('name', 'LIKE', 'Standardveranstaltung')->first();
                                 $user->event_id = $currentEvent->id;
                                 $user->save();
 
-                                $response->respond('Ich habe ' . $eventName . ' gelöscht. Ab sofort ist die Standard-Veranstaltung aktiv.');
+                                $response->respond('Ich habe ' . $eventName . ' gelöscht. Ab sofort ist die Standardveranstaltung aktiv.');
                             } else {
                                 $response->respond('Ich konnte keine Veranstaltung ' . $eventName . ' finden.');
                             }
@@ -163,11 +163,11 @@ class EventManagerController extends Controller
 
                 case 'AddGuestIntent' :
                     if (isset($alexaRequest->slots['Name']) && !empty($alexaRequest->slots['Name'])) {
-                        $guestName = $alexaRequest->slots['Name'];
+                        $guestName = ucwords($alexaRequest->slots['Name']);
 
                         /* Determine whether this guest already exists */
 
-                        $guests = Guest::forEvent($currentEvent->id)->where('name', $guestName)->get();
+                        $guests = Guest::forEvent($currentEvent->id)->where('name', 'LIKE', $guestName)->get();
                         if ($guests->isEmpty()) {
                             Guest::create(['event_id' => $currentEvent->id, 'name' => $guestName, 'status' => 'undecided']);
                             $response->respond('Ich habe ' . $guestName . ' zur Gästeliste hinzugefügt');
@@ -182,9 +182,9 @@ class EventManagerController extends Controller
 
                 case 'RemoveGuestIntent' :
                     if (isset($alexaRequest->slots['Name']) && !empty($alexaRequest->slots['Name'])) {
-                        $guestName = $alexaRequest->slots['Name'];
+                        $guestName = ucwords($alexaRequest->slots['Name']);
 
-                        Guest::forEvent($currentEvent->id)->where('name', $guestName)->delete();
+                        Guest::forEvent($currentEvent->id)->where('name', 'LIKE', $guestName)->delete();
                         $response->respond('Ich habe ' . $guestName . ' von der Gästeliste entfernt.');
                     } else {
                         $response->reprompt('Welcher Gast soll von der Gästeliste gelöscht werden?');
@@ -200,9 +200,9 @@ class EventManagerController extends Controller
 
                 case 'ConfirmGuestIntent' :
                     if (isset($alexaRequest->slots['Name']) && !empty($alexaRequest->slots['Name'])) {
-                        $guestName = $alexaRequest->slots['Name'];
+                        $guestName = ucwords($alexaRequest->slots['Name']);
 
-                        $guest = Guest::forEvent($currentEvent->id)->where('name', $guestName)->first();
+                        $guest = Guest::forEvent($currentEvent->id)->where('name', 'LIKE', $guestName)->first();
                         if (!is_null($guest)) {
                             $guest->status = 'confirmed';
                             $guest->save();
@@ -218,9 +218,9 @@ class EventManagerController extends Controller
 
                 case 'CallOffGuestIntent' :
                     if (isset($alexaRequest->slots['Name']) && !empty($alexaRequest->slots['Name'])) {
-                        $guestName = $alexaRequest->slots['Name'];
+                        $guestName = ucwords($alexaRequest->slots['Name']);
 
-                        $guest = Guest::forEvent($currentEvent->id)->where('name', $guestName)->first();
+                        $guest = Guest::forEvent($currentEvent->id)->where('name', 'LIKE', $guestName)->first();
                         if (!is_null($guest)) {
                             $guest->status = 'unable';
                             $guest->save();
@@ -342,9 +342,9 @@ class EventManagerController extends Controller
 
                 case 'GetGuestStatusIntent' :
                     if (isset($alexaRequest->slots['Name']) && !empty($alexaRequest->slots['Name'])) {
-                        $guestName = $alexaRequest->slots['Name'];
+                        $guestName = ucwords($alexaRequest->slots['Name']);
 
-                        $guest = Guest::forEvent($currentEvent->id)->where('name', $guestName)->first();
+                        $guest = Guest::forEvent($currentEvent->id)->where('name', 'LIKE', $guestName)->first();
                         if (!is_null($guest)) {
                             switch ($guest->status) {
                                 case 'confirmed' :
