@@ -105,7 +105,7 @@ class EventManagerController extends Controller
                             if (!empty($event)) {
                                 /* Remove guests first */
 
-                                $event::guests()->delete();
+                                $event->guests()->delete();
 
                                 /* Remove event */
 
