@@ -42,7 +42,7 @@ class EventManagerController extends Controller
 
         $currentEvent = $user->lastEvent;
         $response->respond('Aktuelle Veranstaltung: ' . $currentEvent->name);
-        return $response->json($response->render());
+        return response()->json($response->render());
 
         if ($alexaRequest instanceof IntentRequest) {
             switch ($alexaRequest->intentName) {
