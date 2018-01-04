@@ -150,6 +150,11 @@ class EventManagerController extends Controller
 
                     break;
 
+                case 'WhichEventIntent' :
+                    $response->respond('Die aktive Veranstaltung ist ' . $currentEvent->name);
+
+                    break;
+
                 case 'AddGuestIntent' :
                     if (isset($alexaRequest->slots['Name']) && !empty($alexaRequest->slots['Name'])) {
                         $guestName = $alexaRequest->slots['Name'];
