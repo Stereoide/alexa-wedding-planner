@@ -41,6 +41,8 @@ class EventManagerController extends Controller
         /* Fetch lastly used event */
 
         $event = $user->event;
+        $response->respond($event->toString());
+        return response()->json($response->render());
 
         if ($alexaRequest instanceof IntentRequest) {
             switch ($alexaRequest->intentName) {
