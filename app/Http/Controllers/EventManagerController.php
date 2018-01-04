@@ -144,7 +144,10 @@ class EventManagerController extends Controller
                                 $eventNames[] = $event->name;
                             });
 
-                            $responseText = 'Es gibt ' . $events->count() . ' Veranstaltungen: ' . implode(', ', $eventNames);
+                            $firstEventNames = collect($eventNames);
+                            $lastEventName = $firstEventNames->splice($firstEventNames->count() - 1)->first();
+
+                            $responseText = 'Es gibt ' . $events->count() . ' Veranstaltungen: ' . implode(', ', $firstEventNames->all()) . ' und ' . $lastEventName;
                             $response->respond($responseText);
                         }
                     }
