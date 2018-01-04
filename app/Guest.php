@@ -28,6 +28,11 @@ class Guest extends Model
      * Scopes
      */
 
+    public function scopeForEvent($query, int $eventId)
+    {
+        return $query->where('event_id', $eventId);
+    }
+
     public function scopeUndecided($query)
     {
         return $query->where('status', 'undecided');
