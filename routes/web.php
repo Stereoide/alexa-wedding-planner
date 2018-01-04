@@ -12,5 +12,7 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    $user = App\User::find(1);
+    $lastEvent = $user->lastEvent();
+    dd($lastEvent);
 });
