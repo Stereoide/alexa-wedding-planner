@@ -24,6 +24,11 @@ class User extends Model
         return $this->hasMany('App\Event');
     }
 
+    public function lastEvent()
+    {
+        return $this->hasOne('\App\Event');
+    }
+
     /**
      * Scopes
      */
