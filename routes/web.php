@@ -11,8 +11,3 @@
 |
 */
 
-Route::get('/', function () {
-    $user = App\User::find(1);
-    $lastEvent = $user->lastEvent;
-    dd($lastEvent);
-});
