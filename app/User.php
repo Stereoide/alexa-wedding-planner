@@ -2,28 +2,44 @@
 
 namespace App;
 
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 
-class User extends Authenticatable
+class User extends Model
 {
-    use Notifiable;
-
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'user_id', 'event_id'
     ];
 
     /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
+     * Relationships
      */
-    protected $hidden = [
-        'password', 'remember_token',
-    ];
+
+    public function events()
+    {
+        return $this->hasMany('App\Event');
+    }
+
+    /**
+     * Scopes
+     */
+
+    public function scopeUndecided($query)
+    {
+        return $query->where('status', 'undecided');
+    }
+
+    public function scopeConfirmed($query)
+    {
+        return $query->where('status', 'confirmed');
+    }
+
+    public function scopeUnable($query)
+    {
+        return $query->where('status', 'unable');
+    }
 }

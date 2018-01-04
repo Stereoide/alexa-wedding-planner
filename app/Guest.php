@@ -12,8 +12,17 @@ class Guest extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'status',
+        'event_id', 'name', 'status',
     ];
+
+    /**
+     * Relationships
+     */
+
+    public function event()
+    {
+        return $this->belongsTo('App\Event');
+    }
 
     /**
      * Scopes

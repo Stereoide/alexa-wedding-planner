@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Alexa\Request\IntentRequest;
+use App\User;
+use App\Event;
 use App\Guest;
 use Illuminate\Http\Request;
 
@@ -11,8 +13,34 @@ class EventManagerController extends Controller
     public function index(Request $request)
     {
         $alexaRequest = \Alexa\Request\Request::fromData($request->json()->all());
-
         $response = new \Alexa\Response\Response;
+
+        /* Determine whether the current Amazon Alexa User already exists */
+
+        $userId = $alexaRequest->user->userId;
+
+        if (empty($userId)) {
+            $response->respond('Es tut mir leid, aber ich konnte leider keinen Benutzer erkennen.');
+            return response()->json($response->render());
+        }
+
+        $user = User::where('user_id', $userId)->first();
+        if (empty($user)) {
+            /* No user found -> Create user and default event */
+
+            $user = User::create(['user_id' => $userId, ]);
+            $event = Event::create(['user_id' => $user->id, 'name' => 'Standard-Veranstaltung', ]);
+
+            $user->event_id = $event->id;
+            $user->save();
+
+            $response->respond('Herzlich willkommen. Ich habe bereits eine Standard-Veranstaltung für Sie angelegt, Sie können also sofort loslegen.');
+            return response()->json($response->render());
+        }
+
+        /* Fetch lastly used event */
+
+        $event = $user->event;
 
         if ($alexaRequest instanceof IntentRequest) {
             switch ($alexaRequest->intentName) {
@@ -227,6 +255,11 @@ class EventManagerController extends Controller
                     } else {
                         $response->reprompt('Für welchen Gast möchtest Du den Anmeldestatus wissen?');
                     }
+
+                    break;
+
+                case 'AMAZON.HelpIntent' :
+                    $response->respond('Mögliche Anweisungen lauten: Neue Veranstaltung erstellen, Veranstaltung wechseln, neuen Gast hinzufügen, Gästeliste oder wer hat bereits zugeasgt.');
 
                     break;
 
