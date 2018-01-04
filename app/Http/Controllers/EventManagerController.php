@@ -54,11 +54,13 @@ class EventManagerController extends Controller
                         if (empty($event)) {
                             $currentEvent = Event::create(['user_id' => $user->id, 'name' => $eventName, ]);
                             $user->event_id = $currentEvent->id;
+                            $user->save();
 
                             $response->respond('Ich habe ' . $eventName . ' angelegt und zur aktiven Veranstaltung gemacht.');
                         } else {
                             $currentEvent = $event;
                             $user->event_id = $currentEvent->id;
+                            $user->save();
 
                             $response->respond('Es gibt bereits eine Veranstaltung ' . $eventName . ' - ich habe diese zur aktiven Veranstaltung gemacht.');
                         }
@@ -78,6 +80,7 @@ class EventManagerController extends Controller
                         if (!empty($event)) {
                             $currentEvent = $event;
                             $user->event_id = $currentEvent->id;
+                            $user->save();
 
                             $response->respond('Ich habe ' . $eventName . ' zur aktiven Veranstaltung gemacht.');
                         } else {
@@ -112,6 +115,7 @@ class EventManagerController extends Controller
 
                                 $currentEvent = Event::forUser($user->id)->where('name', 'Standard-Veranstaltung')->first();
                                 $user->event_id = $currentEvent->id;
+                                $user->save();
 
                                 $response->respond('Ich habe ' . $eventName . ' gelöscht. Ab sofort ist die Standard-Veranstaltung aktiv.');
                             } else {
@@ -135,14 +139,13 @@ class EventManagerController extends Controller
                         if ($events->count() == 1) {
                             $responseText = 'Es gibt eine Veranstaltung: ' . $events->first()->name;
                         } else {
-                            $responseText = 'Es gibt ' . $events->count() . ' Veranstaltungen: ';
-
                             $eventNames = [];
                             $events->each(function($event) use (&$eventNames) {
                                 $eventNames[] = $event->name;
                             });
 
-                            $responseText .= implode(', ' . $eventNames);
+                            $responseText = 'Es gibt ' . $events->count() . ' Veranstaltungen: ' . implode(', ', $eventNames);
+                            $response->respond($responseText);
                         }
                     }
 
@@ -151,7 +154,7 @@ class EventManagerController extends Controller
                     break;
 
                 case 'WhichEventIntent' :
-                    $response->respond('Die aktive Veranstaltung ist ' . $currentEvent->name);
+                    $response->respond('Aktuell ist ' . $currentEvent->name . ' die aktive Veranstaltung.');
 
                     break;
 
