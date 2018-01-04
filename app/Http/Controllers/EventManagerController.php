@@ -139,12 +139,7 @@ class EventManagerController extends Controller
                         if ($events->count() == 1) {
                             $responseText = 'Es gibt zur Zeit nur eine Veranstaltung: ' . $events->first()->name;
                         } else {
-                            $eventNames = [];
-                            $events->each(function($event) use (&$eventNames) {
-                                $eventNames[] = $event->name;
-                            });
-
-                            $firstEventNames = collect($eventNames);
+                            $firstEventNames = $events->pluck('name')->sort();
                             $lastEventName = $firstEventNames->splice($firstEventNames->count() - 1)->first();
 
                             $responseText = 'Es gibt ' . $events->count() . ' Veranstaltungen: ' . implode(', ', $firstEventNames->all()) . ' und ' . $lastEventName;
@@ -291,12 +286,15 @@ class EventManagerController extends Controller
                     if ($guests->isEmpty()) {
                         $response->respond('Es haben noch keine Gäste zugesagt.');
                     } else {
-                        $guestNames = [];
-                        $guests->each(function($guest) use (&$guestNames) {
-                            $guestNames[] = $guest->name;
-                        });
+                        $firstGuestNames = $guests->pluck('name')->sort();
+                        $lastGuestName = $firstGuestNames->splice($firstGuestNames->count() - 1)->first();
 
-                        $responseText = 'Folgende Gäste haben bereits zugesagt: ' . implode(', ', $guestNames);
+                        if ($firstGuestNames->isEmpty()) {
+                            $responseText = 'Bisher hat nur ' . $lastGuestName . ' zugesagt.';
+                        } else {
+                            $responseText = 'Folgende Gäste haben bereits zugesagt: ' . implode(', ', $firstGuestNames->all()) . ' und ' . $lastGuestName;
+                        }
+
                         $response->respond($responseText);
                     }
 
@@ -310,12 +308,15 @@ class EventManagerController extends Controller
                     if ($guests->isEmpty()) {
                         $response->respond('Es haben noch keine Gäste abgesagt.');
                     } else {
-                        $guestNames = [];
-                        $guests->each(function($guest) use (&$guestNames) {
-                            $guestNames[] = $guest->name;
-                        });
+                        $firstGuestNames = $guests->pluck('name')->sort();
+                        $lastGuestName = $firstGuestNames->splice($firstGuestNames->count() - 1)->first();
 
-                        $responseText = 'Folgende Gäste haben bereits abgesagt: ' . implode(', ', $guestNames);
+                        if ($firstGuestNames->isEmpty()) {
+                            $responseText = 'Bisher hat nur ' . $lastGuestName . ' abgesagt.';
+                        } else {
+                            $responseText = 'Folgende Gäste haben abgesagt: ' . implode(', ', $firstGuestNames->all()) . ' und ' . $lastGuestName;
+                        }
+
                         $response->respond($responseText);
                     }
 
