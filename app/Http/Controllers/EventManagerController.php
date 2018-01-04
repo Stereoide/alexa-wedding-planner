@@ -329,12 +329,7 @@ class EventManagerController extends Controller
                     if ($guests->isEmpty()) {
                         $response->respond('Es sind keine Anmeldungen mehr offen.');
                     } else {
-                        $guestNames = collect();
-                        $guests->each(function($guest) use (&$guestNames) {
-                            $guestNames->push($guest->name);
-                        });
-
-                        $firstGuestNames = $guestNames->sort();
+                        $firstGuestNames = $guests->pluck('name')->sort();
                         $lastGuestName = $firstGuestNames->splice($firstGuestNames->count() - 1)->first();
 
                         if ($firstGuestNames->isEmpty()) {
