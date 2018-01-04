@@ -137,7 +137,7 @@ class EventManagerController extends Controller
                         $responseText = 'Es liegen aktuell keine Veranstaltungen vor.';
                     } else {
                         if ($events->count() == 1) {
-                            $responseText = 'Es gibt eine Veranstaltung: ' . $events->first()->name;
+                            $responseText = 'Es gibt zur Zeit nur eine Veranstaltung: ' . $events->first()->name;
                         } else {
                             $eventNames = [];
                             $events->each(function($event) use (&$eventNames) {
@@ -329,12 +329,20 @@ class EventManagerController extends Controller
                     if ($guests->isEmpty()) {
                         $response->respond('Es sind keine Anmeldungen mehr offen.');
                     } else {
-                        $guestNames = [];
+                        $guestNames = collect();
                         $guests->each(function($guest) use (&$guestNames) {
-                            $guestNames[] = $guest->name;
+                            $guestNames->push($guest->name);
                         });
 
-                        $responseText = 'Folgende Gäste haben sich noch nicht entschieden: ' . implode(', ', $guestNames);
+                        $firstGuestNames = $guestNames->sort();
+                        $lastGuestName = $firstGuestNames->splice($firstGuestNames->count() - 1)->first();
+
+                        if ($firstGuestNames->isEmpty()) {
+                            $responseText = 'Bisher hat sich nur ' . $lastGuestName . ' noch nicht entschieden.';
+                        } else {
+                            $responseText = 'Folgende Gäste haben sich noch nicht entschieden: ' . implode(', ', $firstGuestNames->all()) . ' und ' . $lastGuestName;
+                        }
+
                         $response->respond($responseText);
                     }
 
