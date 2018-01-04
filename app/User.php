@@ -26,7 +26,7 @@ class User extends Model
 
     public function lastEvent()
     {
-        return $this->hasOne('\App\Event');
+        return $this->hasOne('\App\Event', 'id', 'event_id');
     }
 
     /**
