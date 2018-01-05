@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Alexa\Request\IntentRequest;
+use App\GuestNote;
 use App\User;
 use App\Event;
 use App\Guest;
@@ -374,6 +375,128 @@ class EventManagerController extends Controller
                         }
                     } else {
                         $response->reprompt('Für welchen Gast möchtest Du den Anmeldestatus wissen?');
+                    }
+
+                    break;
+
+                case 'AddGuestNoteIntent' :
+                    if (isset($alexaRequest->slots['Notiz']) && !empty($alexaRequest->slots['Notiz']) && isset($alexaRequest->slots['Gast']) && !empty($alexaRequest->slots['Gast'])) {
+                        $noteName = ucwords($alexaRequest->slots['Notiz']);
+                        $guestName = ucwords($alexaRequest->slots['Gast']);
+
+                        /* Determine whether this guest is registered for the current event */
+
+                        $guest = Guest::forEvent($currentEvent->id)->where('name', 'LIKE', $guestName)->first();
+                        if (!empty($guest)) {
+                            /* Determine whether this note is already registered for this guest */
+
+                            $note = GuestNote::forGuest($guest->id)->where('note', 'LIKE', $noteName)->first();
+                            if (empty($note)) {
+                                $note = GuestNote::create(['guest_id' => $guest->id, 'note' => $noteName, ]);
+
+                                $response->respond('Ich habe die Notiz ' . $noteName . ' für ' . $guestName . ' angelegt.');
+                            } else {
+                                $response->respond('Für ' . $guestName . ' war bereits eine Notiz ' . $noteName . ' hinterlegt.');
+                            }
+                        } else {
+                            $response->respond($guestName . ' ist mir nicht als Gast für diese Veranstaltung bekannt.');
+                        }
+                    } else {
+                        $response->reprompt('Welche Notiz soll für welchen Gast hinzugefügt werden?');
+                    }
+
+                    break;
+
+                case 'RemoveNoteFromGuestIntent' :
+                    if (isset($alexaRequest->slots['Notiz']) && !empty($alexaRequest->slots['Notiz']) && isset($alexaRequest->slots['Gast']) && !empty($alexaRequest->slots['Gast'])) {
+                        $noteName = ucwords($alexaRequest->slots['Notiz']);
+                        $guestName = ucwords($alexaRequest->slots['Gast']);
+
+                        /* Determine whether this guest is registered for the current event */
+
+                        $guest = Guest::forEvent($currentEvent->id)->where('name', 'LIKE', $guestName)->first();
+                        if (!empty($guest)) {
+                            /* Determine whether this note is registered for this guest */
+
+                            $note = GuestNote::forGuest($guest->id)->where('note', 'LIKE', $noteName)->first();
+                            if (!empty($note)) {
+                                $note->delete();
+
+                                $response->respond('Ich habe die Notiz ' . $noteName . ' für ' . $guestName . ' entfernt.');
+                            } else {
+                                $response->respond('Für ' . $guestName . ' war keine Notiz ' . $noteName . ' hinterlegt.');
+                            }
+                        } else {
+                            $response->respond($guestName . ' ist mir nicht als Gast für diese Veranstaltung bekannt.');
+                        }
+                    } else {
+                        $response->reprompt('Welche Notiz soll für welchen Gast entfernt werden?');
+                    }
+
+                    break;
+
+                case 'RemoveAllNotesFromGuestIntent' :
+                    if (isset($alexaRequest->slots['Gast']) && !empty($alexaRequest->slots['Gast'])) {
+                        $guestName = ucwords($alexaRequest->slots['Gast']);
+
+                        /* Determine whether this guest is registered for the current event */
+
+                        $guest = Guest::forEvent($currentEvent->id)->where('name', 'LIKE', $guestName)->first();
+                        if (!empty($guest)) {
+                            /* Remove all notes for this guest */
+
+                            GuestNote::forGuest($guest->id)->delete();
+
+                            $response->respond('Ich habe alle Notizen für ' . $guestName . ' entfernt.');
+                        } else {
+                            $response->respond($guestName . ' ist mir nicht als Gast für diese Veranstaltung bekannt.');
+                        }
+                    } else {
+                        $response->reprompt('Für welchen Gast sollen alle Notizen entfernt werden?');
+                    }
+
+                    break;
+
+                case 'GetGuestNotesIntent' :
+                    if (isset($alexaRequest->slots['Gast']) && !empty($alexaRequest->slots['Gast'])) {
+                        $guestName = ucwords($alexaRequest->slots['Gast']);
+
+                        /* Determine whether this guest is registered for the current event */
+
+                        $guest = Guest::forEvent($currentEvent->id)->where('name', 'LIKE', $guestName)->first();
+                        if (!empty($guest)) {
+                            /* Fetch notes for this guest */
+
+                            $notes = GuestNote::forGuest($guest->id)->get();
+
+                            if ($notes->isEmpty()) {
+                                $response->respond('Für ' . $guestName . ' sind keine Notizen eingetragen.');
+                            } else if ($notes->count() == 1) {
+                                $response->respond('Für ' . $guestName . ' ist folgende Notiz eingetragen; ' . $notes->first()->pluck('note')->first());
+                            } else {
+                                $firstNotes = $notes->pluck('note');
+                                $lastNote = $firstNotes->splice($firstNotes->count() - 1)->first();
+
+                                $response->respond('Folgende Notizen sind für ' . $guestName . ' eingetragen: ' . implode(', ', $firstNotes->all()) . ' und ' . $lastNote);
+                            }
+                        } else {
+                            $response->respond($guestName . ' ist mir nicht als Gast für diese Veranstaltung bekannt.');
+                        }
+                    } else {
+                        /* First fetch guests with notes */
+
+                        $guests = Guest::forEvent($currentEvent->id)->has('guest_notes')->get();
+                        if (!$guests->isEmpty()) {
+                            $responseText = 'Für folgende Gäste sind Notizen hinterlegt. ';
+
+                            $guests->each(function($guest) use (&$responseText) {
+                                $responseText .= $guest->name . ': ' . implode(', ', $guest->notes->pluck('note')->all()) . '.';
+                            });
+
+                            $response->respond($responseText);
+                        } else {
+                            $response->respond('Es ist für keinen Gast eine Notiz hinterlegt');
+                        }
                     }
 
                     break;

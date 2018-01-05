@@ -28,23 +28,4 @@ class User extends Model
     {
         return $this->hasOne('\App\Event', 'id', 'event_id');
     }
-
-    /**
-     * Scopes
-     */
-
-    public function scopeUndecided($query)
-    {
-        return $query->where('status', 'undecided');
-    }
-
-    public function scopeConfirmed($query)
-    {
-        return $query->where('status', 'confirmed');
-    }
-
-    public function scopeUnable($query)
-    {
-        return $query->where('status', 'unable');
-    }
 }
