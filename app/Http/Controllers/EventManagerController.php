@@ -485,7 +485,7 @@ class EventManagerController extends Controller
                     } else {
                         /* First fetch guests with notes */
 
-                        $guests = Guest::forEvent($currentEvent->id)->has('guest_notes')->get();
+                        $guests = Guest::forEvent($currentEvent->id)->has('notes')->get();
                         if (!$guests->isEmpty()) {
                             $responseText = 'Für folgende Gäste sind Notizen hinterlegt. ';
 
@@ -523,9 +523,9 @@ class EventManagerController extends Controller
             }
         } else {
             $responses = [
-                'Hallo',
                 'Herzlich Willkommen',
-                'Willkommen',
+                'Willkommen beim Eventplaner',
+                'Willkommen zurück',
             ];
             $response->respond($responses[array_rand($responses)]);
         }
