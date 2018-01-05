@@ -24,6 +24,11 @@ class Guest extends Model
         return $this->belongsTo('App\Event');
     }
 
+    public function notes()
+    {
+        return $this->hasMany('App\GuestNote');
+    }
+
     /**
      * Scopes
      */
