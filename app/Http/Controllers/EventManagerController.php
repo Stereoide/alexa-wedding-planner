@@ -379,7 +379,7 @@ class EventManagerController extends Controller
 
                     break;
 
-                case 'AddGuestNoteIntent' :
+                case 'AddNoteToGuestIntent' :
                     if (isset($alexaRequest->slots['Notiz']) && !empty($alexaRequest->slots['Notiz']) && isset($alexaRequest->slots['Gast']) && !empty($alexaRequest->slots['Gast'])) {
                         $noteName = ucwords($alexaRequest->slots['Notiz']);
                         $guestName = ucwords($alexaRequest->slots['Gast']);
