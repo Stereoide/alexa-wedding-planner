@@ -98,7 +98,7 @@ class Intent
         $outputSpeech->text = 'Beispieltext';
 
         $json = json_encode([
-            'version' => $this->version,
+            'version' => '1.0',
             'sessionAttributes' => new \stdClass(),
             'response' => [
                 'outputSpeech' => $outputSpeech,
