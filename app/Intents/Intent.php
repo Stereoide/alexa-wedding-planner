@@ -74,14 +74,23 @@ class Intent
 
     public function delegateDialog()
     {
-        error_log('delegating dialog');
+        $intentName = get_class($this);
+        error_log('delegating dialog for intent ' . $intentName);
 
         echo json_encode([
-            'type' => 'Dialog.Delegate',
-            'updatedIntent' => [
-                'name' => get_class($this),
-                'confirmationStatus' => $this->confirmationStatus,
-                'slots' => $this->slots,
+            "version" => "1.0",
+            "sessionAttributes" => [],
+            "response" => [
+                "outputSpeech" => [
+                    "type" => "PlainText",
+                    "text" => "Standard-Antwort bei Umleitung"
+                ],
+                "shouldEndSession" => false,
+                "directives" => [
+                    [
+                        'type' => 'Dialog.Delegate'
+                    ]
+                ]
             ]
         ]);
 
