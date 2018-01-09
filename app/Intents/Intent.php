@@ -95,6 +95,9 @@ class Intent
         ]);
         error_log($json);
 
+        header('Content-Type: application/json;charset=UTF-8');
+        header('Content-Length: ' . strlen($json));
+
         echo $json;
         exit;
     }
