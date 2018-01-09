@@ -48,15 +48,15 @@ class Intent
         /* Optional slots */
 
         foreach ($this->optionalSlots as $slotName) {
-            if (!isset($this->slotValues[$slotName])) {
-                $this->slotValues[$slotName] = '';
+            if (!isset($this->slots[$slotName])) {
+                $this->slots[$slotName] = '';
             }
         }
 
         /* Required slots */
 
         foreach ($this->requiredSlots as $slotName) {
-            if (!isset($this->slotValues[$slotName]) || empty($this->slotValues[$slotName])) {
+            if (!isset($this->slots[$slotName]) || empty($this->slots[$slotName])) {
                 error_log('Slot ' . $slotName . ' missing');
                 /* Redirect the Alexa Dialog */
 
