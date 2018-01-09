@@ -60,28 +60,6 @@ class EventManagerController extends Controller
             }
 
             switch ($alexaRequest->intentName) {
-                case 'GetUnableGuestsListIntent' :
-                    /* Fetch called off guests */
-
-                    $guests = Guest::forEvent($this->currentEvent->id)->unable()->get();
-
-                    if ($guests->isEmpty()) {
-                        $response->respond('Es haben noch keine Gäste abgesagt.');
-                    } else {
-                        $firstGuestNames = $guests->pluck('name')->sort();
-                        $lastGuestName = $firstGuestNames->splice($firstGuestNames->count() - 1)->first();
-
-                        if ($firstGuestNames->isEmpty()) {
-                            $responseText = 'Bisher hat nur ' . $lastGuestName . ' abgesagt.';
-                        } else {
-                            $responseText = 'Folgende Gäste haben abgesagt: ' . implode(', ', $firstGuestNames->all()) . ' und ' . $lastGuestName;
-                        }
-
-                        $response->respond($responseText);
-                    }
-
-                    break;
-
                 case 'GetUndecidedGuestsListIntent' :
                     /* Fetch called off guests */
 
