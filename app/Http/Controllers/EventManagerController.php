@@ -48,6 +48,8 @@ class EventManagerController extends Controller
         if ($alexaRequest instanceof IntentRequest) {
             try {
                 $className = 'App\\Intents\\' . $alexaRequest->intentName;
+                \Monolog\Handler\error_log('Requested class: ' . $className);
+
                 $intent = new $className($user, $alexaRequest);
 
                 $response->respond($intent->process());
