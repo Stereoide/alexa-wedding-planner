@@ -102,7 +102,12 @@ class Intent
             'sessionAttributes' => new \stdClass(),
             'response' => [
                 'outputSpeech' => $outputSpeech,
-                'shouldEndSession' => false
+                'shouldEndSession' => false,
+                'directives' => [
+                    [
+                        'type' => 'Dialog.Delegate'
+                    ]
+                ]
             ]
         ]);
 
