@@ -2,8 +2,6 @@
 
 namespace App\Intents;
 
-use App\Event;
-
 class DefaultIntent extends Intent
 {
     /* Methods */

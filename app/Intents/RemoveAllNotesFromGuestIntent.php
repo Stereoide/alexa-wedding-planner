@@ -2,7 +2,8 @@
 
 namespace App\Intents;
 
-use App\Event;
+use App\Guest;
+use App\GuestNote;
 
 class RemoveAllNotesFromGuestIntent extends Intent
 {

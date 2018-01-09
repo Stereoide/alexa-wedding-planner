@@ -2,7 +2,7 @@
 
 namespace App\Intents;
 
-use App\Event;
+use App\Guest;
 
 class GetUndecidedGuestsListIntent extends Intent
 {
