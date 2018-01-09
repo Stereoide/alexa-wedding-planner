@@ -60,18 +60,6 @@ class EventManagerController extends Controller
             }
 
             switch ($alexaRequest->intentName) {
-                case 'RemoveGuestIntent' :
-                    if (isset($alexaRequest->slots['Name']) && !empty($alexaRequest->slots['Name'])) {
-                        $guestName = ucwords($alexaRequest->slots['Name']);
-
-                        Guest::forEvent($this->currentEvent->id)->where('name', 'LIKE', $guestName)->delete();
-                        $response->respond('Ich habe ' . $guestName . ' von der Gästeliste entfernt.');
-                    } else {
-                        $response->reprompt('Welcher Gast soll von der Gästeliste gelöscht werden?');
-                    }
-
-                    break;
-
                 case 'RemoveAllGuestsIntent' :
                     Guest::forEvent($this->currentEvent->id)->delete();
 
