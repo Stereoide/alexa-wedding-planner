@@ -79,7 +79,7 @@ class Intent
 
         $json = json_encode([
             "version" => "1.0",
-            "sessionAttributes" => new stdClass(),
+            "sessionAttributes" => new \stdClass(),
             "response" => [
                 "outputSpeech" => [
                     "type" => "PlainText",
