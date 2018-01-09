@@ -60,34 +60,6 @@ class EventManagerController extends Controller
             }
 
             switch ($alexaRequest->intentName) {
-                case 'RemoveNoteFromGuestIntent' :
-                    if (isset($alexaRequest->slots['Notiz']) && !empty($alexaRequest->slots['Notiz']) && isset($alexaRequest->slots['Gast']) && !empty($alexaRequest->slots['Gast'])) {
-                        $noteName = ucwords($alexaRequest->slots['Notiz']);
-                        $guestName = ucwords($alexaRequest->slots['Gast']);
-
-                        /* Determine whether this guest is registered for the current event */
-
-                        $guest = Guest::forEvent($this->currentEvent->id)->where('name', 'LIKE', $guestName)->first();
-                        if (!empty($guest)) {
-                            /* Determine whether this note is registered for this guest */
-
-                            $note = GuestNote::forGuest($guest->id)->where('note', 'LIKE', $noteName)->first();
-                            if (!empty($note)) {
-                                $note->delete();
-
-                                $response->respond('Ich habe die Notiz ' . $noteName . ' für ' . $guestName . ' entfernt.');
-                            } else {
-                                $response->respond('Für ' . $guestName . ' war keine Notiz ' . $noteName . ' hinterlegt.');
-                            }
-                        } else {
-                            $response->respond($guestName . ' ist mir nicht als Gast für diese Veranstaltung bekannt.');
-                        }
-                    } else {
-                        $response->reprompt('Welche Notiz soll für welchen Gast entfernt werden?');
-                    }
-
-                    break;
-
                 case 'RemoveAllNotesFromGuestIntent' :
                     if (isset($alexaRequest->slots['Gast']) && !empty($alexaRequest->slots['Gast'])) {
                         $guestName = ucwords($alexaRequest->slots['Gast']);
