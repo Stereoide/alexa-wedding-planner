@@ -14,9 +14,8 @@ class AddEventIntent extends Intent
 
     public function process()
     {
-        error_log('processing');
-
         $eventName = $this->slots['Veranstaltung']->value;
+
         /* Determine whether this event already exists */
 
         $event = Event::forUser($this->user->id)->where('name', 'LIKE', $eventName)->first();
