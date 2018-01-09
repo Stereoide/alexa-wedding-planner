@@ -48,11 +48,13 @@ class EventManagerController extends Controller
         if ($alexaRequest instanceof IntentRequest) {
             try {
                 $className = 'App\\Intents\\' . $alexaRequest->intentName;
-                error_log('Requested class: ' . $className);
-
                 $intent = new $className($user, $alexaRequest);
 
-                $response->respond($intent->process());
+                $responseText = $intent->process();
+                error_log('Response-Text: ' . $responseText);
+                $response->respond($responseText);
+
+                return response()->json($response->render());
             } catch (Exception $e) {
                 die('No matching intent class found');
             }
@@ -490,21 +492,6 @@ class EventManagerController extends Controller
 
                 case 'AMAZON.HelpIntent' :
                     $response->respond('Mögliche Anweisungen lauten: Neue Veranstaltung erstellen, Veranstaltung wechseln, neuen Gast hinzufügen, Gästeliste oder wer hat bereits zugeasgt.');
-
-                    break;
-
-                default :
-                    $responses = [
-                        'Das habe ich leider nicht verstanden',
-                        'Das weiß ich leider nicht',
-                        'Es tut mir leid, damit kann ich dir leider nicht helfen',
-                        'Es tut mir leid, das habe ich nicht verstanden',
-                        'Es tut mir leid, das weiß ich nicht',
-                        'Wie bitte?',
-                    ];
-                    $response->respond($responses[array_rand($responses)]);
-
-                    $response->respond($alexaRequest->intentName);
 
                     break;
             }

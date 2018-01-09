@@ -4,6 +4,7 @@ namespace App\Intents;
 
 use Alexa\Request\IntentRequest;
 use Alexa\Response\OutputSpeech;
+use App\Event;
 use App\Intents\Slots\Slot;
 use App\User;
 
@@ -13,15 +14,17 @@ class Intent
 
     public $slots = [];
     public $user;
+    public $event;
     public $requiredSlots = [];
     public $optionalSlots = [];
     public $confirmationStatus;
 
     /* Methods */
 
-    public function __construct(User $user, IntentRequest $request)
+    public function __construct(User $user, Event $currentEvent, IntentRequest $request)
     {
         $this->user = $user;
+        $this->currentEvent = $currentEvent;
         $this->confirmationStatus = 'NONE';
 
         /* Parse request data for slot values */
@@ -75,28 +78,6 @@ class Intent
 
     public function delegateDialog()
     {
-        $intentName = get_class($this);
-
-        $json = json_encode([
-            'version' => '1.0',
-            'sessionAttributes' => new \stdClass(),
-            'response' => [
-                'outputSpeech' => [
-                    'type' => 'PlainText',
-                    'text' => 'Standard-Antwort bei Umleitung'
-                ],
-                'shouldEndSession' => false,
-                'directives' => [
-                    [
-                        'type' => 'Dialog.Delegate'
-                    ]
-                ]
-            ]
-        ]);
-
-        $outputSpeech = new OutputSpeech;
-        $outputSpeech->text = 'Beispieltext';
-
         $json = json_encode([
             'version' => '1.0',
             'sessionAttributes' => new \stdClass(),

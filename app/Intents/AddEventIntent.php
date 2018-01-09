@@ -15,6 +15,7 @@ class AddEventIntent extends Intent
     public function process()
     {
         $eventName = $this->slots['Veranstaltung']->value;
+        error_log('processing');
 
         /* Determine whether this event already exists */
 
