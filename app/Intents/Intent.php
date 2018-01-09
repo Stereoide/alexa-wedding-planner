@@ -92,7 +92,7 @@ class Intent
                     ]
                 ]
             ]
-        ]);
+        ], JSON_FORCE_OBJECT);
         error_log($json);
 
         echo $json;
