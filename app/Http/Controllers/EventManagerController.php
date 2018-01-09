@@ -58,10 +58,6 @@ class EventManagerController extends Controller
             }
 
             switch ($alexaRequest->intentName) {
-                case 'AddEventIntent' :
-
-                    break;
-
                 case 'ChangeEventIntent' :
                     if (isset($alexaRequest->slots['Veranstaltung']) && !empty($alexaRequest->slots['Veranstaltung'])) {
                         $eventName = ucwords($alexaRequest->slots['Veranstaltung']);

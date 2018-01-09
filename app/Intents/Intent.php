@@ -25,14 +25,20 @@ class Intent
 
         /* Parse request data for slot values */
 
-        foreach ($request->slots as $slotName => $slotValue) {
-            $slotValue = ucwords($slotValue);
-            $this->slots[$slotName] = new Slot($slotName, $slotValue, 'NONE');
-        }
+        $this->parseDataForSlots($request);
 
         /* Assert required slot values are set */
 
         $this->assertRequiredSlotValuesAreSet();
+    }
+
+    protected function parseDataForSlots(IntentRequest $request)
+    {
+        foreach ($request->slots as $slotName => $slotValue) {
+            $slotValue = ucwords($slotValue);
+            error_log('Slot ' . $slotName . ': ' . $slotValue);
+            $this->slots[$slotName] = new Slot($slotName, $slotValue, 'NONE');
+        }
     }
 
     protected function assertRequiredSlotValuesAreSet()
@@ -68,6 +74,8 @@ class Intent
 
     public function delegateDialog()
     {
+        error_log('delegating dialog');
+
         echo json_encode([
             'type' => 'Dialog.Delegate',
             'updatedIntent' => [
