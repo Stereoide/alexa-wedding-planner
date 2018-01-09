@@ -79,7 +79,7 @@ class Intent
 
         $json = json_encode([
             "version" => "1.0",
-            "sessionAttributes" => [],
+            "sessionAttributes" => new stdClass(),
             "response" => [
                 "outputSpeech" => [
                     "type" => "PlainText",
@@ -92,7 +92,7 @@ class Intent
                     ]
                 ]
             ]
-        ], JSON_FORCE_OBJECT);
+        ]);
         error_log($json);
 
         echo $json;
