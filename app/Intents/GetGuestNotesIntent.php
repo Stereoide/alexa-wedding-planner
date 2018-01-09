@@ -29,7 +29,7 @@ class GetGuestNotesIntent extends Intent
                 if ($notes->isEmpty()) {
                     return 'Für ' . $guestName . ' sind keine Notizen eingetragen.';
                 } else if ($notes->count() == 1) {
-                    return 'Für ' . $guestName . ' ist folgende Notiz eingetragen: ' . $notes->first()->pluck('note')->first();
+                    return 'Für ' . $guestName . ' ist folgende Notiz eingetragen: ' . $notes->pluck('note')->first();
                 } else {
                     $firstNotes = $notes->pluck('note');
                     $lastNote = $firstNotes->splice($firstNotes->count() - 1)->first();
