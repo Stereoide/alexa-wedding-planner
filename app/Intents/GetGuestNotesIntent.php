@@ -21,6 +21,8 @@ class GetGuestNotesIntent extends Intent
             /* Determine whether this guest is registered for the current event */
 
             $guest = Guest::forEvent($this->currentEvent->id)->where('name', 'LIKE', $guestName)->first();
+            return 'gast-id: ' . $guest->id;
+
             if (!empty($guest)) {
                 /* Fetch notes for this guest */
 
