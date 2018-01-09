@@ -60,42 +60,6 @@ class EventManagerController extends Controller
             }
 
             switch ($alexaRequest->intentName) {
-                case 'RemoveEventIntent' :
-                    if (isset($alexaRequest->slots['Veranstaltung']) && !empty($alexaRequest->slots['Veranstaltung'])) {
-                        $eventName = ucwords($alexaRequest->slots['Veranstaltung']);
-
-                        if ($eventName == 'Standardveranstaltung') {
-                            $response->respond('Die Standardveranstaltung kann leider nicht gelöscht werden.');
-                        } else {
-                            /* Determine whether this event exists */
-
-                            $event = Event::forUser($this->user->id)->where('name', 'LIKE', $eventName)->first();
-                            if (!empty($event)) {
-                                /* Remove guests first */
-
-                                $event->guests()->delete();
-
-                                /* Remove event */
-
-                                $event->delete();
-
-                                /* Fetch default event */
-
-                                $currentEvent = Event::forUser($this->user->id)->where('name', 'LIKE', 'Standardveranstaltung')->first();
-                                $this->user->event_id = $currentEvent->id;
-                                $this->user->save();
-
-                                $response->respond('Ich habe ' . $eventName . ' gelöscht. Ab sofort ist die Standardveranstaltung aktiv.');
-                            } else {
-                                $response->respond('Ich konnte keine Veranstaltung ' . $eventName . ' finden.');
-                            }
-                        }
-                    } else {
-                        $response->reprompt('Welche Veranstaltung soll gelöscht werden?');
-                    }
-
-                    break;
-
                 case 'GetEventsListIntent' :
                     /* Fetch all events */
 
