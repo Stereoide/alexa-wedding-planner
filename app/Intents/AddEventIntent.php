@@ -8,7 +8,7 @@ class AddEventIntent extends Intent
 {
     /* Required slot values */
 
-    protected $requiredSlots = ['Veranstaltung', ];
+    public $requiredSlots = ['Veranstaltung', ];
 
     /* Methods */
 
