@@ -60,28 +60,6 @@ class EventManagerController extends Controller
             }
 
             switch ($alexaRequest->intentName) {
-                case 'RemoveAllNotesFromGuestIntent' :
-                    if (isset($alexaRequest->slots['Gast']) && !empty($alexaRequest->slots['Gast'])) {
-                        $guestName = ucwords($alexaRequest->slots['Gast']);
-
-                        /* Determine whether this guest is registered for the current event */
-
-                        $guest = Guest::forEvent($this->currentEvent->id)->where('name', 'LIKE', $guestName)->first();
-                        if (!empty($guest)) {
-                            /* Remove all notes for this guest */
-
-                            GuestNote::forGuest($guest->id)->delete();
-
-                            $response->respond('Ich habe alle Notizen für ' . $guestName . ' entfernt.');
-                        } else {
-                            $response->respond($guestName . ' ist mir nicht als Gast für diese Veranstaltung bekannt.');
-                        }
-                    } else {
-                        $response->reprompt('Für welchen Gast sollen alle Notizen entfernt werden?');
-                    }
-
-                    break;
-
                 case 'GetGuestNotesIntent' :
                     if (isset($alexaRequest->slots['Gast']) && !empty($alexaRequest->slots['Gast'])) {
                         $guestName = ucwords($alexaRequest->slots['Gast']);
