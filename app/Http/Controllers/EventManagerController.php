@@ -60,50 +60,6 @@ class EventManagerController extends Controller
             }
 
             switch ($alexaRequest->intentName) {
-                case 'GetGuestNotesIntent' :
-                    if (isset($alexaRequest->slots['Gast']) && !empty($alexaRequest->slots['Gast'])) {
-                        $guestName = ucwords($alexaRequest->slots['Gast']);
-
-                        /* Determine whether this guest is registered for the current event */
-
-                        $guest = Guest::forEvent($this->currentEvent->id)->where('name', 'LIKE', $guestName)->first();
-                        if (!empty($guest)) {
-                            /* Fetch notes for this guest */
-
-                            $notes = GuestNote::forGuest($guest->id)->get();
-
-                            if ($notes->isEmpty()) {
-                                $response->respond('Für ' . $guestName . ' sind keine Notizen eingetragen.');
-                            } else if ($notes->count() == 1) {
-                                $response->respond('Für ' . $guestName . ' ist folgende Notiz eingetragen: ' . $notes->first()->pluck('note')->first());
-                            } else {
-                                $firstNotes = $notes->pluck('note');
-                                $lastNote = $firstNotes->splice($firstNotes->count() - 1)->first();
-
-                                $response->respond('Folgende Notizen sind für ' . $guestName . ' eingetragen: ' . implode(', ', $firstNotes->all()) . ' und ' . $lastNote);
-                            }
-                        } else {
-                            $response->respond($guestName . ' ist mir nicht als Gast für diese Veranstaltung bekannt.');
-                        }
-                    } else {
-                        /* First fetch guests with notes */
-
-                        $guests = Guest::forEvent($this->currentEvent->id)->has('notes')->get();
-                        if (!$guests->isEmpty()) {
-                            $responseText = 'Für folgende Gäste sind Notizen hinterlegt. ';
-
-                            $guests->each(function($guest) use (&$responseText) {
-                                $responseText .= $guest->name . ': ' . implode(', ', $guest->notes->pluck('note')->all()) . '. ';
-                            });
-
-                            $response->respond($responseText);
-                        } else {
-                            $response->respond('Es ist für keinen Gast eine Notiz hinterlegt');
-                        }
-                    }
-
-                    break;
-
                 case 'AMAZON.HelpIntent' :
                     $response->respond('Mögliche Anweisungen lauten: Neue Veranstaltung erstellen, Veranstaltung wechseln, neuen Gast hinzufügen, Gästeliste oder wer hat bereits zugeasgt.');
 
