@@ -18,6 +18,5 @@ class RemoveGuestIntent extends Intent
 
         Guest::forEvent($this->currentEvent->id)->where('name', 'LIKE', $guestName)->delete();
         return 'Ich habe ' . $guestName . ' von der Gästeliste entfernt.';
-
     }
 }
