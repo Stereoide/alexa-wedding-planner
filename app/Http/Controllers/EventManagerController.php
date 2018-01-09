@@ -47,28 +47,21 @@ class EventManagerController extends Controller
 
         if ($alexaRequest instanceof IntentRequest) {
             try {
-                $className = 'App\\Intents\\' . $alexaRequest->intentName;
+                $intentName = str_replace('AMAZON.', '', $alexaRequest->intentName);
+                $className = 'App\\Intents\\' . $intentName;
                 $intent = new $className($user, $currentEvent, $alexaRequest);
 
                 $responseText = $intent->process();
-                error_log('Response-Text: ' . $responseText);
                 $response->respond($responseText);
 
                 return response()->json($response->render());
             } catch (Exception $e) {
                 die('No matching intent class found');
             }
-
-            switch ($alexaRequest->intentName) {
-                case 'AMAZON.HelpIntent' :
-                    $response->respond('Mögliche Anweisungen lauten: Neue Veranstaltung erstellen, Veranstaltung wechseln, neuen Gast hinzufügen, Gästeliste oder wer hat bereits zugeasgt.');
-
-                    break;
-            }
         } else {
             $responses = [
                 'Herzlich Willkommen',
-                'Willkommen beim Eventplaner',
+                'Willkommen beim Veranstaltungsplaner',
                 'Willkommen zurück',
             ];
             $response->respond($responses[array_rand($responses)]);
