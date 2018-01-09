@@ -57,7 +57,6 @@ class Intent
 
         foreach ($this->requiredSlots as $slotName) {
             if (!isset($this->slots[$slotName]) || empty($this->slots[$slotName])) {
-                error_log('Slot ' . $slotName . ' missing');
                 /* Redirect the Alexa Dialog */
 
                 $this->delegateDialog();
@@ -77,8 +76,6 @@ class Intent
 
     public function delegateDialog()
     {
-        error_log('delegating');
-
         $json = json_encode([
             'version' => '1.0',
             'sessionAttributes' => new \stdClass(),
