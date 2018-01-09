@@ -77,7 +77,7 @@ class Intent
         $intentName = get_class($this);
         error_log('delegating dialog for intent ' . $intentName);
 
-        echo json_encode([
+        $json = json_encode([
             "version" => "1.0",
             "sessionAttributes" => [],
             "response" => [
@@ -93,7 +93,9 @@ class Intent
                 ]
             ]
         ]);
+        error_log($json);
 
+        echo $json;
         exit;
     }
 }
