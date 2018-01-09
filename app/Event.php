@@ -34,6 +34,11 @@ class Event extends Model
         return $this->hasManyThrough('App\GuestNote', 'App\Guest');
     }
 
+    public function todos()
+    {
+        return $this->hasMany('App\Todo');
+    }
+
     /**
      * Scopes
      */
