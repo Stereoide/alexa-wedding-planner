@@ -6,10 +6,6 @@ use App\Event;
 
 class GetUnableGuestsListIntent extends Intent
 {
-    /* Required slot values */
-
-    public $requiredSlots = [];
-
     /* Methods */
 
     public function process()

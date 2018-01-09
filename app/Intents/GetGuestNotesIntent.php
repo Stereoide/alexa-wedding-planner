@@ -6,9 +6,9 @@ use App\Event;
 
 class GetGuestNotesIntent extends Intent
 {
-    /* Required slot values */
+    /* Optional slot values */
 
-    public $requiredSlots = [];
+    public $optionalSlots = ['Gast', ];
 
     /* Methods */
 

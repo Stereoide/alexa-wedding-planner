@@ -6,10 +6,6 @@ use App\Event;
 
 class GetUndecidedGuestsListIntent extends Intent
 {
-    /* Required slot values */
-
-    public $requiredSlots = [];
-
     /* Methods */
 
     public function process()
