@@ -60,24 +60,6 @@ class EventManagerController extends Controller
             }
 
             switch ($alexaRequest->intentName) {
-                case 'CallOffGuestIntent' :
-                    if (isset($alexaRequest->slots['Name']) && !empty($alexaRequest->slots['Name'])) {
-                        $guestName = ucwords($alexaRequest->slots['Name']);
-
-                        $guest = Guest::forEvent($this->currentEvent->id)->where('name', 'LIKE', $guestName)->first();
-                        if (!is_null($guest)) {
-                            $guest->status = 'unable';
-                            $guest->save();
-                            $response->respond('Ich habe die Absage für ' . $guestName . ' notiert.');
-                        } else {
-                            $response->respond('Ich konnte keinen Gast mit diesem Namen finden.');
-                        }
-                    } else {
-                        $response->reprompt('Welcher Gast soll abgesagt werden?');
-                    }
-
-                    break;
-
                 case 'GetGuestsListIntent' :
                     /* Fetch all guests */
 
