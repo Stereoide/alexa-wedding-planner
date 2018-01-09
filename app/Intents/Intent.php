@@ -101,7 +101,6 @@ class Intent
             'version' => '1.0',
             'sessionAttributes' => new \stdClass(),
             'response' => [
-                'outputSpeech' => $outputSpeech,
                 'shouldEndSession' => false,
                 'directives' => [
                     [
