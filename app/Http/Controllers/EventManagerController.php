@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 
 class EventManagerController extends Controller
 {
-    public function index(Request $request)
+    public function parseAlexaRequest(Request $request)
     {
         $alexaRequest = \Alexa\Request\Request::fromData($request->json()->all());
         $response = new \Alexa\Response\Response;
@@ -43,31 +43,20 @@ class EventManagerController extends Controller
 
         $currentEvent = $user->lastEvent;
 
+        /* Process known intents */
+
         if ($alexaRequest instanceof IntentRequest) {
+            try {
+                $className = 'App\\Intents\\' . $alexaRequest->intentName;
+                $intent = new $className($user, $alexaRequest);
+
+                $response->respond($intent->process());
+            } catch (Exception $e) {
+                die('No matching intent class found');
+            }
+
             switch ($alexaRequest->intentName) {
                 case 'AddEventIntent' :
-                    if (isset($alexaRequest->slots['Veranstaltung']) && !empty($alexaRequest->slots['Veranstaltung'])) {
-                        $eventName = ucwords($alexaRequest->slots['Veranstaltung']);
-
-                        /* Determine whether this event already exists */
-
-                        $event = Event::forUser($user->id)->where('name', 'LIKE', $eventName)->first();
-                        if (empty($event)) {
-                            $currentEvent = Event::create(['user_id' => $user->id, 'name' => $eventName, ]);
-                            $user->event_id = $currentEvent->id;
-                            $user->save();
-
-                            $response->respond('Ich habe ' . $eventName . ' angelegt und zur aktiven Veranstaltung gemacht.');
-                        } else {
-                            $currentEvent = $event;
-                            $user->event_id = $currentEvent->id;
-                            $user->save();
-
-                            $response->respond('Es gibt bereits eine Veranstaltung ' . $eventName . ' - ich habe diese zur aktiven Veranstaltung gemacht.');
-                        }
-                    } else {
-                        $response->reprompt('Welche Veranstaltung soll zur hinzugefügt werden?');
-                    }
 
                     break;
 
@@ -472,7 +461,7 @@ class EventManagerController extends Controller
                             if ($notes->isEmpty()) {
                                 $response->respond('Für ' . $guestName . ' sind keine Notizen eingetragen.');
                             } else if ($notes->count() == 1) {
-                                $response->respond('Für ' . $guestName . ' ist folgende Notiz eingetragen; ' . $notes->first()->pluck('note')->first());
+                                $response->respond('Für ' . $guestName . ' ist folgende Notiz eingetragen: ' . $notes->first()->pluck('note')->first());
                             } else {
                                 $firstNotes = $notes->pluck('note');
                                 $lastNote = $firstNotes->splice($firstNotes->count() - 1)->first();
@@ -490,7 +479,7 @@ class EventManagerController extends Controller
                             $responseText = 'Für folgende Gäste sind Notizen hinterlegt. ';
 
                             $guests->each(function($guest) use (&$responseText) {
-                                $responseText .= $guest->name . ': ' . implode(', ', $guest->notes->pluck('note')->all()) . '.';
+                                $responseText .= $guest->name . ': ' . implode(', ', $guest->notes->pluck('note')->all()) . '. ';
                             });
 
                             $response->respond($responseText);
