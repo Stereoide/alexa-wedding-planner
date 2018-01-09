@@ -102,7 +102,7 @@ class Intent
             'sessionAttributes' => new \stdClass(),
             'response' => [
                 'outputSpeech' => $outputSpeech,
-                'shouldEndSession' => $this->shouldEndSession ? true : false
+                'shouldEndSession' => false
             ]
         ]);
 
