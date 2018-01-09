@@ -60,40 +60,6 @@ class EventManagerController extends Controller
             }
 
             switch ($alexaRequest->intentName) {
-                case 'GetGuestStatusIntent' :
-                    if (isset($alexaRequest->slots['Name']) && !empty($alexaRequest->slots['Name'])) {
-                        $guestName = ucwords($alexaRequest->slots['Name']);
-
-                        $guest = Guest::forEvent($this->currentEvent->id)->where('name', 'LIKE', $guestName)->first();
-                        if (!is_null($guest)) {
-                            switch ($guest->status) {
-                                case 'confirmed' :
-                                    $response->respond($guestName . ' hat zugesagt.');
-
-                                    break;
-
-                                case 'unable' :
-                                    $response->respond($guestName . ' hat abgesagt.');
-
-                                    break;
-
-                                case 'undecided' :
-                                    $response->respond($guestName . ' hat sich noch nicht entschieden.');
-
-                                    break;
-
-                                default :
-                                    $status = 'unbekannt';
-                            }
-                        } else {
-                            $response->respond('Ich konnte keinen Gast mit diesem Namen finden.');
-                        }
-                    } else {
-                        $response->reprompt('Für welchen Gast möchtest Du den Anmeldestatus wissen?');
-                    }
-
-                    break;
-
                 case 'AddNoteToGuestIntent' :
                     if (isset($alexaRequest->slots['Notiz']) && !empty($alexaRequest->slots['Notiz']) && isset($alexaRequest->slots['Gast']) && !empty($alexaRequest->slots['Gast'])) {
                         $noteName = ucwords($alexaRequest->slots['Notiz']);
