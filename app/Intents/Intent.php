@@ -3,6 +3,7 @@
 namespace App\Intents;
 
 use Alexa\Request\IntentRequest;
+use Alexa\Response\OutputSpeech;
 use App\Intents\Slots\Slot;
 use App\User;
 
@@ -75,25 +76,35 @@ class Intent
     public function delegateDialog()
     {
         $intentName = get_class($this);
-        error_log('delegating dialog for intent ' . $intentName);
 
         $json = json_encode([
-            "version" => "1.0",
-            "sessionAttributes" => new \stdClass(),
-            "response" => [
-                "outputSpeech" => [
-                    "type" => "PlainText",
-                    "text" => "Standard-Antwort bei Umleitung"
+            'version' => '1.0',
+            'sessionAttributes' => new \stdClass(),
+            'response' => [
+                'outputSpeech' => [
+                    'type' => 'PlainText',
+                    'text' => 'Standard-Antwort bei Umleitung'
                 ],
-                "shouldEndSession" => false,
-                "directives" => [
+                'shouldEndSession' => false,
+                'directives' => [
                     [
                         'type' => 'Dialog.Delegate'
                     ]
                 ]
             ]
         ]);
-        error_log($json);
+
+        $outputSpeech = new OutputSpeech;
+        $outputSpeech->text = 'Beispieltext';
+
+        $json = json_encode([
+            'version' => $this->version,
+            'sessionAttributes' => new \stdClass(),
+            'response' => [
+                'outputSpeech' => $outputSpeech,
+                'shouldEndSession' => $this->shouldEndSession ? true : false
+            ]
+        ]);
 
         header('Content-Type: application/json;charset=UTF-8');
         header('Content-Length: ' . strlen($json));
