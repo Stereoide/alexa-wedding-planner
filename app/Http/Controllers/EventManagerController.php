@@ -60,28 +60,6 @@ class EventManagerController extends Controller
             }
 
             switch ($alexaRequest->intentName) {
-                case 'GetUndecidedGuestsListIntent' :
-                    /* Fetch called off guests */
-
-                    $guests = Guest::forEvent($this->currentEvent->id)->undecided()->get();
-
-                    if ($guests->isEmpty()) {
-                        $response->respond('Es sind keine Anmeldungen mehr offen.');
-                    } else {
-                        $firstGuestNames = $guests->pluck('name')->sort();
-                        $lastGuestName = $firstGuestNames->splice($firstGuestNames->count() - 1)->first();
-
-                        if ($firstGuestNames->isEmpty()) {
-                            $responseText = 'Bisher hat sich nur ' . $lastGuestName . ' noch nicht entschieden.';
-                        } else {
-                            $responseText = 'Folgende Gäste haben sich noch nicht entschieden: ' . implode(', ', $firstGuestNames->all()) . ' und ' . $lastGuestName;
-                        }
-
-                        $response->respond($responseText);
-                    }
-
-                    break;
-
                 case 'GetGuestStatusIntent' :
                     if (isset($alexaRequest->slots['Name']) && !empty($alexaRequest->slots['Name'])) {
                         $guestName = ucwords($alexaRequest->slots['Name']);
