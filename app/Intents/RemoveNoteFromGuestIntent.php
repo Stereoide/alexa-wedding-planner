@@ -15,7 +15,7 @@ class RemoveNoteFromGuestIntent extends Intent
 
     public function process()
     {
-        $guestName = $this->slots['Name']->value;
+        $guestName = $this->slots['Gast']->value;
         $noteName = $this->slots['Notiz']->value;
 
         /* Determine whether this guest is registered for the current event */
