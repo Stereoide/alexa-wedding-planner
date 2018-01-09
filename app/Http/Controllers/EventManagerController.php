@@ -60,28 +60,6 @@ class EventManagerController extends Controller
             }
 
             switch ($alexaRequest->intentName) {
-                case 'ChangeEventIntent' :
-                    if (isset($alexaRequest->slots['Veranstaltung']) && !empty($alexaRequest->slots['Veranstaltung'])) {
-                        $eventName = ucwords($alexaRequest->slots['Veranstaltung']);
-
-                        /* Determine whether this event exists */
-
-                        $event = Event::forUser($user->id)->where('name', 'LIKE', $eventName)->first();
-                        if (!empty($event)) {
-                            $currentEvent = $event;
-                            $user->event_id = $currentEvent->id;
-                            $user->save();
-
-                            $response->respond('Ich habe ' . $eventName . ' zur aktiven Veranstaltung gemacht.');
-                        } else {
-                            $response->respond('Ich konnte keine Veranstaltung ' . $eventName . ' finden.');
-                        }
-                    } else {
-                        $response->reprompt('Zu welcher Veranstaltung möchten Sie wechseln?');
-                    }
-
-                    break;
-
                 case 'RemoveEventIntent' :
                     if (isset($alexaRequest->slots['Veranstaltung']) && !empty($alexaRequest->slots['Veranstaltung'])) {
                         $eventName = ucwords($alexaRequest->slots['Veranstaltung']);
@@ -91,7 +69,7 @@ class EventManagerController extends Controller
                         } else {
                             /* Determine whether this event exists */
 
-                            $event = Event::forUser($user->id)->where('name', 'LIKE', $eventName)->first();
+                            $event = Event::forUser($this->user->id)->where('name', 'LIKE', $eventName)->first();
                             if (!empty($event)) {
                                 /* Remove guests first */
 
@@ -103,9 +81,9 @@ class EventManagerController extends Controller
 
                                 /* Fetch default event */
 
-                                $currentEvent = Event::forUser($user->id)->where('name', 'LIKE', 'Standardveranstaltung')->first();
-                                $user->event_id = $currentEvent->id;
-                                $user->save();
+                                $currentEvent = Event::forUser($this->user->id)->where('name', 'LIKE', 'Standardveranstaltung')->first();
+                                $this->user->event_id = $currentEvent->id;
+                                $this->user->save();
 
                                 $response->respond('Ich habe ' . $eventName . ' gelöscht. Ab sofort ist die Standardveranstaltung aktiv.');
                             } else {
@@ -121,7 +99,7 @@ class EventManagerController extends Controller
                 case 'GetEventsListIntent' :
                     /* Fetch all events */
 
-                    $events = Event::forUser($user->id)->get();
+                    $events = Event::forUser($this->user->id)->get();
 
                     if ($events->isEmpty()) {
                         $responseText = 'Es liegen aktuell keine Veranstaltungen vor.';
