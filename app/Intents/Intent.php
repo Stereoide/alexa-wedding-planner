@@ -39,9 +39,7 @@ class Intent
     protected function parseDataForSlots(IntentRequest $request)
     {
         foreach ($request->slots as $slotName => $slotValue) {
-            $slotValue = ucwords($slotValue);
-            error_log('Slot ' . $slotName . ': ' . $slotValue);
-            $this->slots[$slotName] = new Slot($slotName, $slotValue, 'NONE');
+            $this->slots[$slotName] = new Slot($slotName, ucwords($slotValue), 'NONE');
         }
     }
 
@@ -78,6 +76,8 @@ class Intent
 
     public function delegateDialog()
     {
+        error_log('delegating');
+
         $json = json_encode([
             'version' => '1.0',
             'sessionAttributes' => new \stdClass(),
