@@ -60,34 +60,6 @@ class EventManagerController extends Controller
             }
 
             switch ($alexaRequest->intentName) {
-                case 'AddNoteToGuestIntent' :
-                    if (isset($alexaRequest->slots['Notiz']) && !empty($alexaRequest->slots['Notiz']) && isset($alexaRequest->slots['Gast']) && !empty($alexaRequest->slots['Gast'])) {
-                        $noteName = ucwords($alexaRequest->slots['Notiz']);
-                        $guestName = ucwords($alexaRequest->slots['Gast']);
-
-                        /* Determine whether this guest is registered for the current event */
-
-                        $guest = Guest::forEvent($this->currentEvent->id)->where('name', 'LIKE', $guestName)->first();
-                        if (!empty($guest)) {
-                            /* Determine whether this note is already registered for this guest */
-
-                            $note = GuestNote::forGuest($guest->id)->where('note', 'LIKE', $noteName)->first();
-                            if (empty($note)) {
-                                $note = GuestNote::create(['guest_id' => $guest->id, 'note' => $noteName, ]);
-
-                                $response->respond('Ich habe die Notiz ' . $noteName . ' für ' . $guestName . ' angelegt.');
-                            } else {
-                                $response->respond('Für ' . $guestName . ' war bereits eine Notiz ' . $noteName . ' hinterlegt.');
-                            }
-                        } else {
-                            $response->respond($guestName . ' ist mir nicht als Gast für diese Veranstaltung bekannt.');
-                        }
-                    } else {
-                        $response->reprompt('Welche Notiz soll für welchen Gast hinzugefügt werden?');
-                    }
-
-                    break;
-
                 case 'RemoveNoteFromGuestIntent' :
                     if (isset($alexaRequest->slots['Notiz']) && !empty($alexaRequest->slots['Notiz']) && isset($alexaRequest->slots['Gast']) && !empty($alexaRequest->slots['Gast'])) {
                         $noteName = ucwords($alexaRequest->slots['Notiz']);
