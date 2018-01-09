@@ -13,14 +13,4 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::any('/', 'EventManagerController@index');
-
-Route::POST('/addGuest', 'GuestController@addGuest');
-Route::POST('/removeGuest', 'GuestController@addGuest');
-Route::POST('/getGuestsStatus', 'GuestController@getGuestsStatus');
-Route::POST('/getGuestsList', 'GuestController@getGuestsList');
-Route::POST('/getUndecidedGuestsList', 'GuestController@getUndecidedGuestsList');
-Route::POST('/getConfirmedGuestsList', 'GuestController@getConfirmedGuestsList');
-Route::POST('/getUnableGuestsList', 'GuestController@getUnableGuestsList');
-Route::POST('/confirmGuestStatus', 'GuestController@confirmGuestStatus');
-Route::POST('/calloffGuestStatus', 'GuestController@calloffGuestStatus');
+Route::any('/', 'EventManagerController@parseAlexaRequest');
