@@ -60,11 +60,6 @@ class EventManagerController extends Controller
             }
 
             switch ($alexaRequest->intentName) {
-                case 'WhichEventIntent' :
-                    $response->respond('Aktuell ist ' . $currentEvent->name . ' die aktive Veranstaltung.');
-
-                    break;
-
                 case 'AddGuestIntent' :
                     if (isset($alexaRequest->slots['Name']) && !empty($alexaRequest->slots['Name'])) {
                         $guestName = ucwords($alexaRequest->slots['Name']);
