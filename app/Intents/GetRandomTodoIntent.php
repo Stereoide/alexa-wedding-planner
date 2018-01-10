@@ -10,7 +10,7 @@ class GetRandomTodoIntent extends Intent
 
     public function process()
     {
-        $todo = Guest::forEvent($this->currentEvent->id)->open()->inRandomOrder()->first();
+        $todo = Todo::forEvent($this->currentEvent->id)->open()->inRandomOrder()->first();
         if (!is_null($todo)) {
             return 'Zufällige offene Aufgabe: ' . $todo->todo;
         } else {

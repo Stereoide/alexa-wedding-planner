@@ -23,7 +23,7 @@ class AddDueDateToTodoIntent extends Intent
             $todo->due_at = $dueDate;
             $todo->save();
 
-            return 'Ich habe das Fälligkeitsdatum für ' . $todoName . ' auf ' . $dueDate->formatLocalized('%A, den %d. %B %Y') . ' gesetzt.';
+            return 'Ich habe das Fälligkeitsdatum für ' . $todoName . ' auf ' . $dueDate->formatLocalized('%A den %d. %B %Y') . ' gesetzt.';
         } else {
             return 'Ich kann keine Aufgabe namens ' . $todoName . ' für diese Veranstaltung finden.';
         }

@@ -20,9 +20,9 @@ class GetNextTodoIntent extends Intent
             return 'Es gibt zur Zeit keine offenen Aufgaben.';
         } else {
             if (!is_null($nextOverdueTodo)) {
-                return $nextOverdueTodo->todo . ' ist bereits seit ' . $nextOverdueTodo->due_at->formatLocalized('%A, den %d. %B %Y') . ' überfällig.';
+                return $nextOverdueTodo->todo . ' ist bereits seit ' . $nextOverdueTodo->due_at->formatLocalized('%A den %d. %B %Y') . ' überfällig.';
             } else if (!is_null($nextDueTodo)) {
-                return $nextDueTodo->todo . ' ist als nächstes am ' . $nextDueTodo->due_at->formatLocalized('%A, den %d. %B %Y') . ' fällig.';
+                return $nextDueTodo->todo . ' ist als nächstes am ' . $nextDueTodo->due_at->formatLocalized('%A den %d. %B %Y') . ' fällig.';
             } else if (!is_null($nextUndueTodo)) {
                 return 'Die nächste offene Aufgabe ist ' . $nextUndueTodo->todo . '.';
             } else {
