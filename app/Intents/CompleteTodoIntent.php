@@ -16,7 +16,7 @@ class CompleteTodoIntent extends Intent
     {
         $todoName = $this->slots['Todo']->value;
 
-        $todo = Guest::forEvent($this->currentEvent->id)->where('todo', 'LIKE', $todoName)->first();
+        $todo = Todo::forEvent($this->currentEvent->id)->where('todo', 'LIKE', $todoName)->first();
         if (!is_null($todo)) {
             $todo->status = 'completed';
             $todo->save();
