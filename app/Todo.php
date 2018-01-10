@@ -40,6 +40,6 @@ class Todo extends Model
 
     public function scopeCompleted($query)
     {
-        return $query->where('status', 'complete');
+        return $query->where('status', 'completed');
     }
 }
