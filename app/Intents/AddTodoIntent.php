@@ -4,7 +4,7 @@ namespace App\Intents;
 
 use App\Todo;
 
-class AddTodoIntent
+class AddTodoIntent extends Intent
 {
     /* Required slot values */
 

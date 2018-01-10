@@ -4,7 +4,7 @@ namespace App\Intents;
 
 use App\Todo;
 
-class RemoveTodoIntent
+class RemoveTodoIntent extends Intent
 {
     /* Required slot values */
 

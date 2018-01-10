@@ -4,7 +4,7 @@ namespace App\Intents;
 
 use App\Todo;
 
-class GetTodosListIntent
+class GetTodosListIntent extends Intent
 {
     /* Methods */
 

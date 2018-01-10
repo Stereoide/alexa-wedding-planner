@@ -4,7 +4,7 @@ namespace App\Intents;
 
 use App\Todo;
 
-class ReopenTodoIntent
+class ReopenTodoIntent extends Intent
 {
     /* Required slot values */
 

@@ -4,7 +4,7 @@ namespace App\Intents;
 
 use App\Todo;
 
-class CompleteTodoIntent
+class CompleteTodoIntent extends Intent
 {
     /* Required slot values */
 
