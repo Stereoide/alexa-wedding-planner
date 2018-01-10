@@ -35,9 +35,9 @@ class GetTodosListIntent extends Intent
                 $responseText .= 'es sind keine Aufgaben mehr offen.';
             } else {
                 if ($todosOpen->count() == 1) {
-                    $responseText .= 'eine Aufgabe wurde noch nicht erledigt.';
+                    $responseText .= 'eine Aufgabe ist noch offen.';
                 } else {
-                    $responseText .= $todosOpen->count() . ' Aufgaben wurden noch nicht erledigt.';
+                    $responseText .= $todosOpen->count() . ' Aufgaben sind noch offen.';
                 }
             }
         }
