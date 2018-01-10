@@ -17,6 +17,9 @@ class GetTodoDueDateIntent extends Intent
     {
         $todoName = $this->slots['Todo']->value;
 
+        $loc_de = setlocale (LC_ALL, 'de_DE@euro', 'de_DE', 'de', 'ge');
+        error_log("Preferred locale for german on this system is '$loc_de'");
+
         $todo = Todo::forEvent($this->currentEvent->id)->where('todo', 'LIKE', $todoName)->first();
         if (!empty($todo)) {
             if (is_null($todo->due_at)) {
