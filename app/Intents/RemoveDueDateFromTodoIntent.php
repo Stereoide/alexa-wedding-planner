@@ -16,24 +16,14 @@ class RemoveDueDateFromTodoIntent extends Intent
     {
         $todoName = $this->slots['Todo']->value;
 
-        return 'Diese Funktion wird noch nicht unterstützt';
+        $todo = Todo::forEvent($this->currentEvent->id)->where('todo', 'LIKE', $todoName)->first();
+        if (!empty($todo)) {
+            $todo->due_at = null;
+            $todo->save();
 
-        /* Determine whether this guest is registered for the current event */
-
-        $guest = Guest::forEvent($this->currentEvent->id)->where('name', 'LIKE', $guestName)->first();
-        if (!empty($guest)) {
-            /* Determine whether this note is already registered for this guest */
-
-            $note = GuestNote::forGuest($guest->id)->where('note', 'LIKE', $noteName)->first();
-            if (empty($note)) {
-                $note = GuestNote::create(['guest_id' => $guest->id, 'note' => $noteName, ]);
-
-                return 'Ich habe die Notiz ' . $noteName . ' für ' . $guestName . ' angelegt.';
-            } else {
-                return 'Für ' . $guestName . ' war bereits eine Notiz ' . $noteName . ' hinterlegt.';
-            }
+            return 'Ich habe das Fälligkeitsdatum für ' . $todoName . ' gelöscht.';
         } else {
-            return $guestName . ' ist mir nicht als Gast für diese Veranstaltung bekannt.';
+            return 'Ich kann keine Aufgabe namens ' . $todoName . ' für diese Veranstaltung finden.';
         }
     }
 }
