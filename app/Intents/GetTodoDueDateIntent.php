@@ -22,7 +22,7 @@ class GetTodoDueDateIntent extends Intent
             if (is_null($todo->due_at)) {
                 return 'Für ' . $todoName . ' ist kein Fälligkeitsdatum eingetragen.';
             } else {
-                return $todoName . ' ist am ' . $todo->due_at->formatLocalized('%A, den %d.%B.%Y') . ' fällig.';
+                return $todoName . ' ist am ' . $todo->due_at->formatLocalized('%A, den %d. %B %Y') . ' fällig.';
             }
         } else {
             return 'Ich kann keine Aufgabe namens ' . $todoName . ' für diese Veranstaltung finden.';
