@@ -50,19 +50,16 @@ class EventManagerController extends Controller
 
             /* Try to instantiate the corresponding Intent class */
 
-            try {
-                $intentName = str_replace('AMAZON.', '', $alexaRequest->intentName);
-                $className = 'App\\Intents\\' . $intentName;
+            $intentName = str_replace('AMAZON.', '', $alexaRequest->intentName);
+            $className = 'App\\Intents\\' . $intentName;
+
+            if (class_exists($className)) {
                 $intent = new $className($user, $currentEvent, $alexaRequest);
-            } catch (Exception $e) {
+            } else {
                 /* Try to instantiate the default Intent class */
 
-                try {
-                    $className = 'App\\Intents\\DefaultIntent';
-                    $intent = new $className($user, $currentEvent, $alexaRequest);
-                } catch (Exception $e) {
-                    die('No matching intent class found');
-                }
+                $className = 'App\\Intents\\DefaultIntent';
+                $intent = new $className($user, $currentEvent, $alexaRequest);
             }
 
             $responseText = $intent->process();
