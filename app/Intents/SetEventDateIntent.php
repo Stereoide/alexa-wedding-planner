@@ -15,11 +15,8 @@ class SetEventDateIntent extends Intent
 
     public function process()
     {
-        $date = $this->slots['Date']->value;
+        $date = Carbon::parse($this->slots['Date']->value);
         error_log('Datum: ' . $date);
-        $date = Carbon::createFromFormat('Y-m-d', $date);
-        error_log('Datum: ' . $date);
-
 
         $currentEventDate = $this->currentEvent->event_at;
 
