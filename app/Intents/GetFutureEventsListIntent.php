@@ -23,12 +23,12 @@ class GetFutureEventsListIntent extends Intent
             $firstEvents = $events->sortBy('event_at');
             $lastEvent = $firstEvents->splice($firstEvents->count() - 1)->first();
 
-            $responseText = 'Die folgenden ' . $events->count() . ' Veranstaltungen sind für die Zukunft eplant: ';
+            $responseText = 'Die folgenden ' . $events->count() . ' Veranstaltungen sind für die Zukunft geplant: ';
             $firstEvents->each(function($event) use (&$responseText) {
                 $responseText .= $event->name . ' am ' . $event->event_at->formatLocalized('%d.%m.%Y') . ', ';
             });
 
-            $responseText = substr($responseText, 0, strlen($responseText) - 1) . ' und ';
+            $responseText = substr($responseText, 0, strlen($responseText) - 2) . ' und ';
             $responseText .= $lastEvent->name . ' am ' . $lastEvent->event_at->formatLocalized('%d.%m.%Y') . ', ';
         }
 

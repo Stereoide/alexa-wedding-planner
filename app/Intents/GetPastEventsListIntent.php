@@ -28,7 +28,7 @@ class GetPastEventsListIntent extends Intent
                 $responseText .= $event->name . ' am ' . $event->event_at->formatLocalized('%d.%m.%Y') . ', ';
             });
 
-            $responseText = substr($responseText, 0, strlen($responseText) - 1) . ' und ';
+            $responseText = substr($responseText, 0, strlen($responseText) - 2) . ' und ';
             $responseText .= $lastEvent->name . ' am ' . $lastEvent->event_at->formatLocalized('%d.%m.%Y') . ', ';
         }
 
