@@ -14,7 +14,7 @@ class GetNextEventIntent extends Intent
         /* Fetch next events */
 
         $todayEvents = Event::forUser($this->user->id)->today()->get();
-        $futureEvents = Event::forUser($this->user->id)->future()->get();
+        $futureEvents = Event::forUser($this->user->id)->inFuture()->get();
 
         if (!$todayEvents->isEmpty()) {
             $responseText = '';

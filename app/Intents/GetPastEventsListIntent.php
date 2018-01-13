@@ -12,7 +12,7 @@ class GetPastEventsListIntent extends Intent
     {
         /* Fetch all events */
 
-        $events = Event::forUser($this->user->id)->past()->get()->sortBy('event_at');
+        $events = Event::forUser($this->user->id)->inPast()->get()->sortBy('event_at');
 
         if ($events->isEmpty()) {
             $responseText = 'Es haben keine Veranstaltungen in der Vergangenheit stattgefunden.';

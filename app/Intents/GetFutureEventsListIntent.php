@@ -12,7 +12,7 @@ class GetFutureEventsListIntent extends Intent
     {
         /* Fetch all events */
 
-        $events = Event::forUser($this->user->id)->future()->get()->sortBy('event_at');
+        $events = Event::forUser($this->user->id)->inFuture()->get()->sortBy('event_at');
 
         if ($events->isEmpty()) {
             $responseText = 'Aktuell sind keine Veranstaltungen für die Zukunft geplant.';
