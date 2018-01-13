@@ -14,7 +14,7 @@ class GuestIsAdultIntent extends Intent
 
     public function process()
     {
-        $guestName = $this->slots['Name']->value;
+        $guestName = $this->slots['Guest']->value;
 
         $guest = Guest::forEvent($this->currentEvent->id)->where('name', 'LIKE', $guestName)->first();
         if (!is_null($guest)) {
