@@ -62,22 +62,24 @@ class Event extends Model
 
     public function scopeToday($query)
     {
-        return $query->whereDate('event_at', '=', Carbon::today()->format('Y-m-d'));
+        error_log('looking for ' . Carbon::today('Europe/Berlin')->format('Y-m-d'));
+        return $query->whereDate('event_at', '=', Carbon::today('Europe/Berlin')->format('Y-m-d'));
     }
 
     public function scopeTomorrow($query)
     {
-        return $query->whereDate('event_at', '=', Carbon::tomorrow()->format('Y-m-d'));
+        error_log('looking for ' . Carbon::tomorrow('Europe/Berlin')->format('Y-m-d'));
+        return $query->whereDate('event_at', '=', Carbon::tomorrow('Europe/Berlin')->format('Y-m-d'));
     }
 
     public function scopeInPast($query)
     {
-        return $query->whereDate('event_at', '<', Carbon::today()->format('Y-m-d'));
+        return $query->whereDate('event_at', '<', Carbon::today('Europe/Berlin')->format('Y-m-d'));
     }
 
     public function scopeInFuture($query)
     {
-        return $query->whereDate('event_at', '>', Carbon::today()->format('Y-m-d'));
+        return $query->whereDate('event_at', '>', Carbon::today('Europe/Berlin')->format('Y-m-d'));
     }
 
     public function scopeNoDate($query)
