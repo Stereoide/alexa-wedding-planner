@@ -12,7 +12,7 @@ class Guest extends Model
      * @var array
      */
     protected $fillable = [
-        'event_id', 'name', 'status',
+        'event_id', 'name', 'status', 'child_or_adult',
     ];
 
     /**
@@ -51,5 +51,20 @@ class Guest extends Model
     public function scopeUnable($query)
     {
         return $query->where('status', 'unable');
+    }
+
+    public function scopeChild($query)
+    {
+        return $query->where('child_or_adult', 'child');
+    }
+
+    public function scopeAdult($query)
+    {
+        return $query->where('child_or_adult', 'adult');
+    }
+
+    public function scopeNeitherChildNorAdult($query)
+    {
+        return $query->whereNull('child_or_adult');
     }
 }
