@@ -16,7 +16,6 @@ class SetEventDateIntent extends Intent
     public function process()
     {
         $date = Carbon::parse($this->slots['Date']->value);
-        error_log('Datum: ' . $date);
 
         $currentEventDate = $this->currentEvent->event_at;
 
@@ -27,7 +26,7 @@ class SetEventDateIntent extends Intent
 
         if (is_null($currentEventDate)) {
             return 'Ich habe das Veranstaltungsdatum für die aktuelle Veranstaltung auf ' . $date->formatLocalized('%A den %d. %B %Y') . ' gesetzt.';
-        } else if ($currentEventDate == $date) {
+        } else if ($currentEventDate->toDateString() == $date->toDateString()) {
             return 'Das Veranstaltungsdatum der aktuellen Veranstaltung war bereits auf ' . $date->formatLocalized('%A den %d. %B %Y') . ' gesetzt.';
         } else {
             return 'Das Veranstaltungsdatum der aktuellen Veranstaltung war auf ' . $currentEventDate->formatLocalized('%A den %d. %B %Y') . ' gesetzt - ich habe es wie gewünscht auf ' . $date->formatLocalized('%A den %d. %B %Y') . ' geändert.';
