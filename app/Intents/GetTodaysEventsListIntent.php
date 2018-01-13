@@ -4,7 +4,7 @@ namespace App\Intents;
 
 use App\Event;
 
-class GetTodaysEventsIntent extends Intent
+class GetTodaysEventsListIntent extends Intent
 {
     /* Methods */
 
