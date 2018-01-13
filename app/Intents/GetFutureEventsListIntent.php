@@ -24,7 +24,7 @@ class GetFutureEventsListIntent extends Intent
             $lastEvent = $firstEvents->splice($firstEvents->count() - 1)->first();
 
             $responseText = 'Die folgenden ' . $events->count() . ' Veranstaltungen sind für die Zukunft eplant: ';
-            $firstEvents->foreach(function($event) use (&$responseText) {
+            $firstEvents->each(function($event) use (&$responseText) {
                 $responseText .= $event->name . ' am ' . $event->event_at->formatLocalized('%d.%m.%Y') . ', ';
             });
 
