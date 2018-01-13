@@ -17,6 +17,7 @@ class Todo extends Model
         'updated_at',
         'due_at'
     ];
+
     /**
      * The attributes that are mass assignable.
      *

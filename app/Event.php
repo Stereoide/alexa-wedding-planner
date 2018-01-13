@@ -2,17 +2,29 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Event extends Model
 {
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = [
+        'created_at',
+        'updated_at',
+        'event_at'
+    ];
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'user_id', 'name',
+        'user_id', 'name', 'event_at',
     ];
 
     /**
@@ -46,5 +58,30 @@ class Event extends Model
     public function scopeForUser($query, string $userId)
     {
         return $query->where('user_id', $userId);
+    }
+
+    public function scopeToday($query)
+    {
+        return $query->whereDate('event_at', '=', Carbon::today()->toDateString());
+    }
+
+    public function scopeTomorrow($query)
+    {
+        return $query->whereDate('event_at', '=', Carbon::tomorrow()->toDateString());
+    }
+
+    public function scopeInPast($query)
+    {
+        return $query->whereDate('event_at', '<', Carbon::today()->toDateString());
+    }
+
+    public function scopeInFuture($query)
+    {
+        return $query->whereDate('event_at', '>', Carbon::today()->toDateString());
+    }
+
+    public function scopeNoDate($query)
+    {
+        return $query->whereNull('event_at');
     }
 }
